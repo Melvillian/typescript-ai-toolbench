@@ -9,6 +9,8 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run --root . --passWithNoTests",
+    "lint": "eslint src --fix",
     "start": "bun bin/cli.js",
     "build:single": "bun run build && bun build bin/cli.js --compile --outfile cli --target=bun --define BUILD_VERSION=\"$(cat package.json | jq -r '.version')\""
   },
