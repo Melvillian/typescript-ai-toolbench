@@ -1,5 +1,5 @@
 import { readFile, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { basename, join } from 'path';
 
 import { Command } from 'commander';
 
@@ -20,7 +20,7 @@ const renderDeploy = new Command('render-deploy')
     try {
       await generateDockerfile(targetPath, appName);
       await generateDockerignore(targetPath);
-      await appendToRenderYaml(appName);
+      await appendToRenderYaml(appName, basename(process.cwd()));
 
       console.log('\n✓ Render deploy files generated successfully!');
       console.log('\nNext steps:');
@@ -86,10 +86,22 @@ dist
   console.log('✓ Created .dockerignore');
 }
 
-async function appendToRenderYaml(appName: string) {
+// Render appends its own random suffix to the .onrender.com subdomain, so a
+// bare app name like "api" produces an unrecognizable domain (api-mvqh).
+// Prefixing the repo name keeps domains identifiable across template clones.
+export function serviceNameFor(repoName: string, appName: string): string {
+  return `${repoName}-${appName}`;
+}
+
+export async function appendToRenderYaml(
+  appName: string,
+  repoName: string,
+  renderYamlPath: string = RENDER_YAML_PATH,
+) {
+  const serviceName = serviceNameFor(repoName, appName);
   const serviceEntry = `
   - type: web
-    name: ${appName}
+    name: ${serviceName}
     env: docker
     autoDeploy: true
     dockerfilePath: apps/${appName}/Dockerfile
@@ -102,20 +114,20 @@ async function appendToRenderYaml(appName: string) {
 
   let existing = '';
   try {
-    existing = await readFile(RENDER_YAML_PATH, 'utf-8');
+    existing = await readFile(renderYamlPath, 'utf-8');
   } catch {
     // File doesn't exist, create it with the services header
     existing = 'services:\n';
   }
 
-  if (existing.includes(`name: ${appName}`)) {
+  if (existing.includes(`name: ${serviceName}`)) {
     console.log(
-      `⚠ render.yaml already contains a service named '${appName}', skipping`,
+      `⚠ render.yaml already contains a service named '${serviceName}', skipping`,
     );
     return;
   }
 
-  await writeFile(RENDER_YAML_PATH, existing.trimEnd() + '\n' + serviceEntry);
+  await writeFile(renderYamlPath, existing.trimEnd() + '\n' + serviceEntry);
   console.log('✓ Updated render.yaml');
 }
 
