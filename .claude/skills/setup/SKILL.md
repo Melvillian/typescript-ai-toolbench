@@ -21,38 +21,42 @@ Run `bun --version` and verify it is installed.
 - **If missing:** Ask the user if they'd like you to install Bun by running `curl -fsSL https://bun.sh/install | bash`. If they agree, run it. If they decline, stop and tell them Bun is required.
 - **If installed:** Check the version. The repo's `packageManager` field specifies `bun@1.3.3`. Any version >= 1.3.3 should work. If the installed version is older, warn the user and suggest upgrading.
 
-## 3. Install dependencies
+## 3. Update root package.json names
+
+Find all instances of `template-typescript-monorepo` in the repository, and replace them with the name of the repository. Choose the name of the project's root directory, even if it differs from the repository name according to git.
+
+## 4. Install dependencies
 
 Run `bun install` from the repo root. This installs all workspace dependencies (root, apps/_, packages/_).
 
 - **If it fails:** Show the error output to the user and stop.
 
-## 4. Build all packages and apps
+## 5. Build all packages and apps
 
 Run `bun run build` from the repo root. This builds packages first, then apps (order matters since apps depend on packages).
 
 - **If it fails:** Show the error output. Common causes: missing dependencies (re-run `bun install`), TypeScript errors in source code. Help the user diagnose.
 
-## 5. Run type checking
+## 6. Run type checking
 
 Run `bun run typecheck` to verify all packages and apps pass TypeScript type checking.
 
 - **If it fails:** Show which package(s) failed and the errors. This usually indicates a code issue, not a setup issue — inform the user.
 
-## 6. Run tests
+## 7. Run tests
 
 Run `bun run test` to execute the test suite.
 
 - **If it fails:** Show the failing tests. Distinguish between test failures (code issue) and missing test infrastructure (setup issue). If vitest is not found, `bun install` may not have completed correctly.
 
-## 7. Run linter
+## 8. Run linter
 
 Run `bun run lint:check` to verify the linter is working.
 
 - **If it fails due to lint errors:** That's fine — the linter works. Tell the user there are lint issues they can fix with `bun run lint`.
 - **If it fails due to missing eslint or config issues:** That's a setup problem. Help diagnose.
 
-## 8. Check environment variables
+## 9. Check environment variables
 
 Check for environment variables that packages in this repo may need at runtime. Do NOT create any files — just warn about what's missing.
 
@@ -68,7 +72,7 @@ Check for environment variables that packages in this repo may need at runtime. 
 
 Also check if `apps/api/.env.example` exists and remind the user to copy it to `apps/api/.env` if they plan to run the API server locally (check if `apps/api/.env` already exists first — if it does, skip this).
 
-## 9. Summary
+## 10. Summary
 
 Print a summary table of all checks:
 
@@ -76,6 +80,7 @@ Print a summary table of all checks:
 | ---------------------- | ------------ |
 | Node.js >= 22          | pass/fail    |
 | Bun >= 1.3.3           | pass/fail    |
+| Update template name   | pass/fail    |
 | Dependencies installed | pass/fail    |
 | Build                  | pass/fail    |
 | Type check             | pass/fail    |
@@ -85,8 +90,9 @@ Print a summary table of all checks:
 
 If everything passed, tell the user they're good to go and remind them of the key commands:
 
-- `bun run start` — Run the CLI
-- `bun run start:api` — Run the API server
+- `bun run docker:build:api` — build the API server app docker image
+- `bun run docker:start:api` - run the API server app in docker
+- `bun run dev:cli` — Run the CLI
 - `bun run test` — Run tests
 - `bun run lint` — Lint and fix
 
