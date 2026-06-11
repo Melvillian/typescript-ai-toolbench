@@ -8,8 +8,7 @@
     "test": "vitest run --root . --passWithNoTests",
     "lint": "eslint src --fix",
     "start": "node dist/main.js",
-    "dev": "tsx watch src/main.ts",
-    "start:docker": "cd ../.. && docker build -t api -f apps/api/Dockerfile . && docker run --rm --init -p 80:80 api"
+    "dev": "tsx watch src/main.ts"
   },
   "dependencies": {
     "express": "^4.18.2"
