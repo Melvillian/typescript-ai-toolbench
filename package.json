@@ -10,7 +10,7 @@
     "build": "bun --filter './packages/*' build && bun --filter './apps/*' build",
     "dev:api": "bun --filter './packages/*' build && bun --filter api dev",
     "dev:cli": "bun --filter './packages/*' build && bun --filter cli start",
-    "docker:build:api": "git archive HEAD | docker build -t template-typescript-monorepo-api -f apps/api/Dockerfile -",
+    "docker:build:api": "docker build -t template-typescript-monorepo-api -f apps/api/Dockerfile -",
     "docker:start:api": "docker run --rm --init -p 8080:80 -e NODE_ENV=production -e PORT=80 template-typescript-monorepo-api",
     "clean": "rimraf dist packages/**/dist apps/**/dist",
     "clean:all": "rimraf dist node_modules packages/**/node_modules packages/**/dist apps/**/node_modules apps/**/dist",

@@ -10,10 +10,13 @@ TypeScript monorepo using Bun workspaces. Node >=22 required.
 ## Commands
 
 - `bun run build` - Build all packages and apps
-- `bun run start` / `bun run start:cli` - Run CLI app
-- `bun run start:api` - Run API app
+- `bun run dev:cli` - Build packages, then run CLI app
+- `bun run dev:api` - Build packages, then run API server in watch mode
+- `bun run docker:build:api` - Build the API Docker image (from committed files)
+- `bun run docker:start:api` - Run the API Docker image on port 8080
 - `bun run test` - Run tests (vitest)
 - `bun run test:watch` - Run tests in watch mode
+- `bun run test:coverage` - Generate test coverage report
 - `bun run lint` - Lint and fix (eslint)
 - `bun run lint:check` - Lint check only
 - `bun run typecheck` - Typecheck all packages

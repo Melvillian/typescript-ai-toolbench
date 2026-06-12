@@ -31,7 +31,7 @@ See the [Environment variables](#environment-variables) section below for requir
 - Command line, (TODO) React app, and web server
 - Vite for Bundling, CSS Handling, Live Reloading
 - CLI via @commander
-- Fastify for server with file-based router
+- Express for the API server
 - Hot reload of (TODO) React
 - Auto service restart for the web server
 - Prettier for code formatting
@@ -42,20 +42,24 @@ See the [Environment variables](#environment-variables) section below for requir
 
 ## Commands
 
-| Command                 | Description                   |
-| ----------------------- | ----------------------------- |
-| `bun run build`         | Build all packages and apps   |
-| `bun run start`         | Run CLI app                   |
-| `bun run start:api`     | Run API server                |
-| `bun run test`          | Run tests (vitest)            |
-| `bun run test:watch`    | Run tests in watch mode       |
-| `bun run test:coverage` | Generate test coverage report |
-| `bun run lint`          | Lint and fix (eslint)         |
-| `bun run lint:check`    | Lint check only               |
-| `bun run typecheck`     | Type check all packages       |
-| `bun run format`        | Format code (prettier)        |
-| `bun run clean`         | Remove dist directories       |
-| `bun run clean:all`     | Remove dist + node_modules    |
+| Command                    | Description                                           |
+| -------------------------- | ----------------------------------------------------- |
+| `bun run build`            | Build all packages and apps                           |
+| `bun run dev:cli`          | Build packages, then run the CLI app                  |
+| `bun run dev:api`          | Build packages, then run the API server in watch mode |
+| `bun run docker:build:api` | Build the API Docker image                            |
+| `bun run docker:start:api` | Run the API Docker image on port 8080                 |
+| `bun run test`             | Run tests (vitest)                                    |
+| `bun run test:watch`       | Run tests in watch mode                               |
+| `bun run test:coverage`    | Generate test coverage report                         |
+| `bun run lint`             | Lint and fix (eslint)                                 |
+| `bun run lint:check`       | Lint check only                                       |
+| `bun run typecheck`        | Type check all packages                               |
+| `bun run format`           | Format code (prettier)                                |
+| `bun run clean`            | Remove dist directories                               |
+| `bun run clean:all`        | Remove dist + node_modules                            |
+| `bun run cloc`             | Count lines of code                                   |
+| `bun run depcheck`         | Report unused dependencies                            |
 
 ## Environment variables
 
