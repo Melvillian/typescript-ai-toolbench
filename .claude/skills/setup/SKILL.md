@@ -25,38 +25,50 @@ Run `bun --version` and verify it is installed.
 
 Find all instances of `template-typescript-monorepo` in the repository, and replace them with the name of the repository. Choose the name of the project's root directory, even if it differs from the repository name according to git.
 
-## 4. Install dependencies
+## 4. Rewrite the README for this project
+
+The README.md still describes the template this repo was created from ("This is a template for a monorepo..."). Rewrite it to describe **this** project.
+
+1. **Check whether this is still needed:** If the README's title and intro already describe this project (not the template), report "already done" and skip to the next step.
+2. **Determine the project name:** Use the project's root directory name (same convention as step 3).
+3. **Determine the project's purpose:** Ask the user for a one-to-two sentence explanation of what this project is for. You should almost always ask — only skip asking when the root directory name makes the purpose unambiguous (e.g. `caroline-nanny-website` is obviously a website for a nanny named Caroline). A name like `my-tools` or `acme-monorepo` is NOT obvious — ask.
+4. **Rewrite README.md:**
+   - Replace the title and intro with the project name and purpose.
+   - Remove template-specific language (e.g. "This is a template...", references to the template author's preferences).
+   - Keep the Setup, Commands, and Environment variables sections — they describe this repo's mechanics and remain accurate. Keep the Features section only if it still reflects what the project uses; trim entries that don't apply.
+
+## 5. Install dependencies
 
 Run `bun install` from the repo root. This installs all workspace dependencies (root, apps/_, packages/_).
 
 - **If it fails:** Show the error output to the user and stop.
 
-## 5. Build all packages and apps
+## 6. Build all packages and apps
 
 Run `bun run build` from the repo root. This builds packages first, then apps (order matters since apps depend on packages).
 
 - **If it fails:** Show the error output. Common causes: missing dependencies (re-run `bun install`), TypeScript errors in source code. Help the user diagnose.
 
-## 6. Run type checking
+## 7. Run type checking
 
 Run `bun run typecheck` to verify all packages and apps pass TypeScript type checking.
 
 - **If it fails:** Show which package(s) failed and the errors. This usually indicates a code issue, not a setup issue — inform the user.
 
-## 7. Run tests
+## 8. Run tests
 
 Run `bun run test` to execute the test suite.
 
 - **If it fails:** Show the failing tests. Distinguish between test failures (code issue) and missing test infrastructure (setup issue). If vitest is not found, `bun install` may not have completed correctly.
 
-## 8. Run linter
+## 9. Run linter
 
 Run `bun run lint:check` to verify the linter is working.
 
 - **If it fails due to lint errors:** That's fine — the linter works. Tell the user there are lint issues they can fix with `bun run lint`.
 - **If it fails due to missing eslint or config issues:** That's a setup problem. Help diagnose.
 
-## 9. Check environment variables
+## 10. Check environment variables
 
 Check for environment variables that packages in this repo may need at runtime. Do NOT create any files — just warn about what's missing.
 
@@ -72,7 +84,7 @@ Check for environment variables that packages in this repo may need at runtime. 
 
 Also check if `apps/api/.env.example` exists and remind the user to copy it to `apps/api/.env` if they plan to run the API server locally (check if `apps/api/.env` already exists first — if it does, skip this).
 
-## 10. Summary
+## 11. Summary
 
 Print a summary table of all checks:
 
@@ -81,6 +93,7 @@ Print a summary table of all checks:
 | Node.js >= 22          | pass/fail    |
 | Bun >= 1.3.3           | pass/fail    |
 | Update template name   | pass/fail    |
+| README rewritten       | pass/skipped |
 | Dependencies installed | pass/fail    |
 | Build                  | pass/fail    |
 | Type check             | pass/fail    |
@@ -107,6 +120,6 @@ This skill should be updated when the repo's setup requirements change. Common t
 - **Node or Bun version requirement changes**: Update the version check in sections 1 or 2.
 - **New workspace package or app added**: No change needed — `bun install` and `bun run build` already handle all workspaces via globs. But if the new package has unique prerequisites (e.g., native dependencies, external services), add a check.
 - **New bun script added to root package.json**: Only update this skill if the script represents a setup-critical step (like a new build phase or migration). Convenience scripts (like a new `start:*` variant) don't need setup changes, but should be added to the summary's "key commands" reminder if users should know about them.
-- **New .env.example file added**: Add a check in section 8 to remind users to copy it.
+- **New .env.example file added**: Add a check in section 10 to remind users to copy it.
 
 When in doubt, ask: "Would a fresh clone fail or behave unexpectedly without this change in /setup?" If yes, update the skill.
