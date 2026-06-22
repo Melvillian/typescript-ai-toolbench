@@ -43,6 +43,17 @@ Run `bun install` from the repo root. This installs all workspace dependencies (
 
 - **If it fails:** Show the error output to the user and stop.
 
+## 5b. Generate the deterministic build order
+
+Run `bun run gen:build-order` from the repo root. This reads every workspace's
+dependencies and rewrites the root `build` script so packages build in
+topological order (dependencies before dependents). Without this, a clean build
+can race and fail with `TS2307: Cannot find module '@melvillian/...'`.
+
+- **If it reports "Build order already up to date":** nothing to do.
+- **If it updates the order:** the change to `package.json` is expected; it will
+  be committed with the rest of the setup changes.
+
 ## 6. Build all packages and apps
 
 Run `bun run build` from the repo root. This builds packages first, then apps (order matters since apps depend on packages).
@@ -95,6 +106,7 @@ Print a summary table of all checks:
 | Update template name   | pass/fail    |
 | README rewritten       | pass/skipped |
 | Dependencies installed | pass/fail    |
+| Build order generated  | pass/fail    |
 | Build                  | pass/fail    |
 | Type check             | pass/fail    |
 | Tests                  | pass/fail    |
@@ -118,7 +130,11 @@ This skill should be updated when the repo's setup requirements change. Common t
 - **New runtime dependency added** (e.g., a package starts requiring Redis or Postgres): Add a check in the appropriate section, or add a new section before the summary.
 - **New environment variable required**: Add it to the "Check environment variables" section. Specify which package uses it and whether it's required or optional.
 - **Node or Bun version requirement changes**: Update the version check in sections 1 or 2.
-- **New workspace package or app added**: No change needed — `bun install` and `bun run build` already handle all workspaces via globs. But if the new package has unique prerequisites (e.g., native dependencies, external services), add a check.
+- **New workspace package or app added**: `bun install` and `bun run build`
+  handle all workspaces via globs, but the root `build` script must build them in
+  dependency order. Run `bun run gen:build-order` after adding the module so the
+  order is recomputed. If the new package has unique prerequisites (native
+  dependencies, external services), add a check here too.
 - **New bun script added to root package.json**: Only update this skill if the script represents a setup-critical step (like a new build phase or migration). Convenience scripts (like a new `start:*` variant) don't need setup changes, but should be added to the summary's "key commands" reminder if users should know about them.
 - **New .env.example file added**: Add a check in section 10 to remind users to copy it.
 
