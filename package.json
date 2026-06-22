@@ -7,7 +7,8 @@
   "main": "index.js",
   "packageManager": "bun@1.3.3",
   "scripts": {
-    "build": "bun --filter './packages/*' build && bun --filter './apps/*' build",
+    "build": "bun --filter @melvillian/claude-api build && bun --filter @melvillian/common-lib build && bun --filter @melvillian/openai-summarizer build && bun --filter api build && bun --filter cli build",
+    "gen:build-order": "node scripts/gen-build-order.mjs",
     "dev:api": "bun --filter './packages/*' build && bun --filter api dev",
     "dev:cli": "bun --filter './packages/*' build && bun --filter cli start",
     "docker:build:api": "git archive HEAD | docker build -t template-typescript-monorepo-api -f apps/api/Dockerfile -",
