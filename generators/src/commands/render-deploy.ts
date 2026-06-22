@@ -7,7 +7,7 @@ const RENDER_YAML_PATH = 'render.yaml';
 
 const renderDeploy = new Command('render-deploy')
   .description(
-    'Add Render deployment files (Dockerfile, .dockerignore) and update render.yaml for an app in apps/',
+    'Add Render deployment files (Dockerfile) and update render.yaml for an app in apps/',
   )
   .argument(
     '<app-name>',
@@ -19,22 +19,23 @@ const renderDeploy = new Command('render-deploy')
 
     try {
       await generateDockerfile(targetPath, appName);
-      await generateDockerignore(targetPath);
       await appendToRenderYaml(appName, basename(process.cwd()));
 
       console.log('\n✓ Render deploy files generated successfully!');
       console.log('\nNext steps:');
       console.log(
-        '1. Create a Blueprint in the Render dashboard pointing to render.yaml',
+        '1. Regenerate the root build order (a new app changes the graph):',
+      );
+      console.log('   bun run gen:build-order');
+      console.log(
+        '2. Create a Blueprint in the Render dashboard pointing to render.yaml',
       );
       console.log(
         '   (one-time setup: https://dashboard.render.com/select-repo?type=blueprint)',
       );
-
-      console.log('2. Then, commit your changes to the main branch:');
-      console.log('   git add && git commit -a');
-
-      console.log('3. Finally, just push to main to deploy:');
+      console.log('3. Commit your changes:');
+      console.log('   git add -A && git commit');
+      console.log('4. Push to main to deploy:');
       console.log('   git push origin main');
     } catch (error) {
       console.error('Error generating deploy files:', error);
@@ -42,48 +43,42 @@ const renderDeploy = new Command('render-deploy')
     }
   });
 
-async function generateDockerfile(basePath: string, appName: string) {
-  const content = `# Stage 1: Build the single executable binary
-FROM oven/bun:1.3.3-alpine AS builder
+export function dockerfileContent(appName: string): string {
+  return `# Stage 1: Build with the full node image (ships gcc/make/python3 for native
+# addons; no apt needed). bun is required to resolve the workspace:* protocol.
+FROM node:24-bookworm AS builder
+
+RUN npm i -g bun@1.3.3
 
 WORKDIR /app
 
-# Copy the entire monorepo so bun has full workspace context
+# Build context is the repo root (see root .dockerignore).
 COPY . .
 
-# Install all dependencies (full monorepo)
-RUN bun install
+RUN bun install --frozen-lockfile
+RUN bun run build
 
-# Compile the app into a single executable binary
-RUN bun build --compile apps/${appName}/src/main.ts --outfile main
+# Stage 2: Slim runtime. Node major MUST match the builder (ABI) so any native
+# addon loads; bun@1.3.3 embeds Node 24.
+FROM node:24-bookworm-slim
 
-# Stage 2: Minimal runtime with the binary
-FROM alpine:3.23
+WORKDIR /app
 
-RUN apk add --no-cache ca-certificates libstdc++ libgcc
+# Whole tree: node_modules (addons + workspace symlinks), dist, runtime files.
+COPY --from=builder /app /app
 
-COPY --from=builder /app/main /app/main
+ENV NODE_ENV=production PORT=80
 
 EXPOSE 80
 
-CMD ["/app/main"]
+# Run under Node, not a bun-compiled binary.
+CMD ["node", "apps/${appName}/dist/main.js"]
 `;
-
-  await writeFile(join(basePath, 'Dockerfile'), content);
-  console.log('✓ Created Dockerfile');
 }
 
-async function generateDockerignore(basePath: string) {
-  const content = `node_modules
-dist
-.env
-.env.local
-.git
-.gitignore
-`;
-
-  await writeFile(join(basePath, '.dockerignore'), content);
-  console.log('✓ Created .dockerignore');
+async function generateDockerfile(basePath: string, appName: string) {
+  await writeFile(join(basePath, 'Dockerfile'), dockerfileContent(appName));
+  console.log('✓ Created Dockerfile');
 }
 
 // Render appends its own random suffix to the .onrender.com subdomain, so a
@@ -105,11 +100,17 @@ export async function appendToRenderYaml(
     env: docker
     autoDeploy: true
     dockerfilePath: apps/${appName}/Dockerfile
+    healthCheckPath: /health
     envVars:
+      # Image-constant env vars (also baked into the Dockerfile; safe to repeat):
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 80
+      # Secrets: declare with \`sync: false\` and enter the value in the Render
+      # dashboard (encrypted, never committed). Example:
+      # - key: SOME_API_KEY
+      #   sync: false
 `;
 
   let existing = '';

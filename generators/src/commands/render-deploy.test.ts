@@ -4,7 +4,27 @@ import { join } from 'path';
 
 import { describe, expect, it, beforeEach } from 'vitest';
 
-import { appendToRenderYaml, serviceNameFor } from './render-deploy.js';
+import {
+  appendToRenderYaml,
+  dockerfileContent,
+  serviceNameFor,
+} from './render-deploy.js';
+
+describe('dockerfileContent', () => {
+  it('builds with node + bun and runs under node (no --compile binary)', () => {
+    const df = dockerfileContent('api');
+    expect(df).toContain('FROM node:24-bookworm AS builder');
+    expect(df).toContain('RUN bun run build');
+    expect(df).toContain('CMD ["node", "apps/api/dist/main.js"]');
+    expect(df).not.toContain('--compile');
+  });
+
+  it('interpolates the app name into the CMD path', () => {
+    expect(dockerfileContent('worker')).toContain(
+      'CMD ["node", "apps/worker/dist/main.js"]',
+    );
+  });
+});
 
 describe('serviceNameFor', () => {
   it('prefixes the app name with the repository name', () => {
@@ -29,6 +49,7 @@ describe('appendToRenderYaml', () => {
     const yaml = await readFile(yamlPath, 'utf-8');
     expect(yaml).toContain('name: caroline-nanny-website-api');
     expect(yaml).toContain('dockerfilePath: apps/api/Dockerfile');
+    expect(yaml).toContain('healthCheckPath: /health');
     expect(yaml).not.toMatch(/name: api\b/);
   });
 
