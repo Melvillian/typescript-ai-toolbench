@@ -1,2 +1,13 @@
+# Build context is the repo root (COPY . .), so this root .dockerignore governs.
+node_modules
+**/node_modules
+dist
+**/dist
+.git
 .env
+**/.env
 .vscode
+coverage
+# Add any checked-in dev DB / fixtures here so the image stays clean & ephemeral,
+# e.g.:
+# **/*.sqlite
