@@ -1,24 +1,29 @@
-# Stage 1: Build the single executable binary
-FROM oven/bun:1.3.3-alpine AS builder
+# Stage 1: Build with the full node image (ships gcc/make/python3 for native
+# addons; no apt needed). bun is required to resolve the workspace:* protocol.
+FROM node:24-bookworm AS builder
+
+RUN npm i -g bun@1.3.3
 
 WORKDIR /app
 
-# Copy the entire monorepo so bun has full workspace context
+# Build context is the repo root (see root .dockerignore).
 COPY . .
 
-# Install all dependencies (full monorepo)
-RUN bun install
+RUN bun install --frozen-lockfile
+RUN bun run build
 
-# Compile the app into a single executable binary
-RUN bun build --compile apps/api/src/main.ts --outfile main
+# Stage 2: Slim runtime. Node major MUST match the builder (ABI) so any native
+# addon loads; bun@1.3.3 embeds Node 24.
+FROM node:24-bookworm-slim
 
-# Stage 2: Minimal runtime with the binary
-FROM alpine:3.23
+WORKDIR /app
 
-RUN apk add --no-cache ca-certificates libstdc++ libgcc
+# Whole tree: node_modules (addons + workspace symlinks), dist, runtime files.
+COPY --from=builder /app /app
 
-COPY --from=builder /app/main /app/main
+ENV NODE_ENV=production PORT=80
 
 EXPOSE 80
 
-CMD ["/app/main"]
+# Run under Node, not a bun-compiled binary.
+CMD ["node", "apps/api/dist/main.js"]
