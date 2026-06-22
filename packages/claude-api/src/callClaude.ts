@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { getEnv } from '@melvillian/common-lib';
 import 'dotenv/config';
 
-import { getEnv } from '@melvillian/common-lib';
 import { MissingApiKeyError } from './errors.js';
 
 import type {

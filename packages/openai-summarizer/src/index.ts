@@ -1,7 +1,7 @@
+import { getEnv } from '@melvillian/common-lib';
 import 'dotenv/config';
 import OpenAI from 'openai';
 import { z } from 'zod';
-import { getEnv } from '@melvillian/common-lib';
 
 const SummarizeOptionsSchema = z.object({
   apiKey: z.string().optional(),
