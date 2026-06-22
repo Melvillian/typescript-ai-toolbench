@@ -25,10 +25,15 @@ Add Render CD deployment capability to the app `apps/$ARGUMENTS.app-name`.
    ```
 
 4. Verify the generated files exist:
-   - `apps/$ARGUMENTS.app-name/Dockerfile`
-   - `apps/$ARGUMENTS.app-name/.dockerignore`
+   - `apps/$ARGUMENTS.app-name/Dockerfile` (node:24 builder, runs `node …/dist/main.js`)
    - The root `render.yaml` has a new service entry for `$ARGUMENTS.app-name`
+     with `healthCheckPath: /health`
+
+   Note: the generator does NOT write a per-app `.dockerignore` — the build
+   context is the repo root, so the root `.dockerignore` governs.
 
 5. Show the user what was generated and remind them of next steps:
-   - If this is the first service in render.yaml, they need a one-time Blueprint setup in the Render dashboard
+   - Regenerate the root build order (a new app changes the graph): `bun run gen:build-order`
+   - If this is the first service in render.yaml, they need a one-time Blueprint
+     setup in the Render dashboard
    - Otherwise, just `git push origin main` to deploy
