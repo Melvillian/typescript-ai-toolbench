@@ -1,5 +1,5 @@
 ---
-description: Add Render deployment files (Dockerfile, .dockerignore) and a render.yaml service entry for an app in apps/
+description: Add a Render Dockerfile and a render.yaml service entry for an app in apps/
 arguments:
   - name: app-name
     description: Name of the app directory under apps/ (e.g. my-service)
