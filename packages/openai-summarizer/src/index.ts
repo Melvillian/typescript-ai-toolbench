@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import OpenAI from 'openai';
 import { z } from 'zod';
+import { getEnv } from '@melvillian/common-lib';
 
 const SummarizeOptionsSchema = z.object({
   apiKey: z.string().optional(),
@@ -30,7 +31,7 @@ export async function summarizeText(
   }
 
   const validatedOptions = SummarizeOptionsSchema.parse(options);
-  const apiKey = validatedOptions.apiKey ?? process.env['OPENAI_API_KEY'];
+  const apiKey = validatedOptions.apiKey ?? getEnv('OPENAI_API_KEY');
 
   if (!apiKey) {
     throw new Error(

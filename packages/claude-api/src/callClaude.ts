@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import 'dotenv/config';
 
+import { getEnv } from '@melvillian/common-lib';
 import { MissingApiKeyError } from './errors.js';
 
 import type {
@@ -23,7 +24,7 @@ const DEFAULT_MODEL = 'claude-haiku-4-5';
 const DEFAULT_MAX_TOKENS = 4096;
 
 export async function callClaude(options: CallClaudeOptions): Promise<Message> {
-  const apiKey = options.apiKey ?? process.env['ANTHROPIC_API_KEY'];
+  const apiKey = options.apiKey ?? getEnv('ANTHROPIC_API_KEY');
   if (!apiKey) {
     throw new MissingApiKeyError({
       message:
