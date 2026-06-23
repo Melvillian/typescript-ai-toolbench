@@ -37,13 +37,6 @@ bun run build && bun run typecheck && bun --filter <package-name> test && bun --
 
 If any of the four scripts is missing from the new package's `package.json`, the task is incomplete — add it before finishing.
 
-Then regenerate the root build order so the new package builds in dependency
-order (otherwise a clean `bun run build` can race):
-
-```bash
-bun run gen:build-order
-```
-
 ## Auto-Update Instructions
 
 After changes to files in this directory, run `/update-claude-md`.

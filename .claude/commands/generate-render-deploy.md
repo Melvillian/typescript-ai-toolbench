@@ -33,7 +33,6 @@ Add Render CD deployment capability to the app `apps/$ARGUMENTS.app-name`.
    context is the repo root, so the root `.dockerignore` governs.
 
 5. Show the user what was generated and remind them of next steps:
-   - Regenerate the root build order (a new app changes the graph): `bun run gen:build-order`
    - If this is the first service in render.yaml, they need a one-time Blueprint
      setup in the Render dashboard
    - Otherwise, just `git push origin main` to deploy

@@ -19,7 +19,7 @@ Run `node --version` and verify the major version is >= 22 (as required by the `
 Run `bun --version` and verify it is installed.
 
 - **If missing:** Ask the user if they'd like you to install Bun by running `curl -fsSL https://bun.sh/install | bash`. If they agree, run it. If they decline, stop and tell them Bun is required.
-- **If installed:** Check the version. The repo's `packageManager` field specifies `bun@1.3.3`. Any version >= 1.3.3 should work. If the installed version is older, warn the user and suggest upgrading.
+- **If installed:** Check the version. The repo's `packageManager` field specifies `bun@1.3.14`. Bun **>= 1.3.9** is required (older versions don't order `bun --filter` builds by dependency). If the installed version is older, warn the user and suggest upgrading.
 
 ## 3. Update root package.json names
 
@@ -43,20 +43,9 @@ Run `bun install` from the repo root. This installs all workspace dependencies (
 
 - **If it fails:** Show the error output to the user and stop.
 
-## 5b. Generate the deterministic build order
-
-Run `bun run gen:build-order` from the repo root. This reads every workspace's
-dependencies and rewrites the root `build` script so packages build in
-topological order (dependencies before dependents). Without this, a clean build
-can race and fail with `TS2307: Cannot find module '@melvillian/...'`.
-
-- **If it reports "Build order already up to date":** nothing to do.
-- **If it updates the order:** the change to `package.json` is expected; it will
-  be committed with the rest of the setup changes.
-
 ## 6. Build all packages and apps
 
-Run `bun run build` from the repo root. This builds packages first, then apps (order matters since apps depend on packages).
+Run `bun run build` from the repo root. This runs `bun --filter '*' build`, which builds every workspace in dependency order automatically (a dependent waits for its dependency).
 
 - **If it fails:** Show the error output. Common causes: missing dependencies (re-run `bun install`), TypeScript errors in source code. Help the user diagnose.
 
@@ -102,11 +91,10 @@ Print a summary table of all checks:
 | Step                   | Status       |
 | ---------------------- | ------------ |
 | Node.js >= 22          | pass/fail    |
-| Bun >= 1.3.3           | pass/fail    |
+| Bun >= 1.3.9           | pass/fail    |
 | Update template name   | pass/fail    |
 | README rewritten       | pass/skipped |
 | Dependencies installed | pass/fail    |
-| Build order generated  | pass/fail    |
 | Build                  | pass/fail    |
 | Type check             | pass/fail    |
 | Tests                  | pass/fail    |
@@ -130,11 +118,7 @@ This skill should be updated when the repo's setup requirements change. Common t
 - **New runtime dependency added** (e.g., a package starts requiring Redis or Postgres): Add a check in the appropriate section, or add a new section before the summary.
 - **New environment variable required**: Add it to the "Check environment variables" section. Specify which package uses it and whether it's required or optional.
 - **Node or Bun version requirement changes**: Update the version check in sections 1 or 2.
-- **New workspace package or app added**: `bun install` and `bun run build`
-  handle all workspaces via globs, but the root `build` script must build them in
-  dependency order. Run `bun run gen:build-order` after adding the module so the
-  order is recomputed. If the new package has unique prerequisites (native
-  dependencies, external services), add a check here too.
+- **New workspace package or app added**: no build-script change needed — `bun run build` (`bun --filter '*' build`) discovers all workspaces and orders them by dependency automatically. If the new package has unique prerequisites (native dependencies, external services), add a check here.
 - **New bun script added to root package.json**: Only update this skill if the script represents a setup-critical step (like a new build phase or migration). Convenience scripts (like a new `start:*` variant) don't need setup changes, but should be added to the summary's "key commands" reminder if users should know about them.
 - **New .env.example file added**: Add a check in section 10 to remind users to copy it.
 
