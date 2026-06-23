@@ -48,7 +48,7 @@ export function dockerfileContent(appName: string): string {
 # addons; no apt needed). bun is required to resolve the workspace:* protocol.
 FROM node:24-bookworm AS builder
 
-RUN npm i -g bun@1.3.3
+RUN npm i -g bun@1.3.14
 
 WORKDIR /app
 
@@ -59,7 +59,7 @@ RUN bun install --frozen-lockfile
 RUN bun run build
 
 # Stage 2: Slim runtime. Node major MUST match the builder (ABI) so any native
-# addon loads; bun@1.3.3 embeds Node 24.
+# addon loads; bun@1.3.14 embeds Node 24.
 FROM node:24-bookworm-slim
 
 WORKDIR /app
