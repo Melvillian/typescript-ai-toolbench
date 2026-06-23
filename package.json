@@ -5,9 +5,9 @@
   "description": "",
   "type": "module",
   "main": "index.js",
-  "packageManager": "bun@1.3.3",
+  "packageManager": "bun@1.3.14",
   "scripts": {
-    "build": "bun --filter @melvillian/common-lib build && bun --filter api build && bun --filter @melvillian/claude-api build && bun --filter @melvillian/openai-summarizer build && bun --filter cli build",
+    "build": "bun --filter '*' build",
     "gen:build-order": "node scripts/gen-build-order.mjs",
     "dev:api": "bun --filter './packages/*' build && bun --filter api dev",
     "dev:cli": "bun --filter './packages/*' build && bun --filter cli start",
