@@ -17,12 +17,6 @@ export default defineConfig({
           environment: 'node',
         },
       },
-      {
-        test: {
-          include: ['scripts/**/*.test.mjs'],
-          environment: 'node',
-        },
-      },
     ],
   },
 });

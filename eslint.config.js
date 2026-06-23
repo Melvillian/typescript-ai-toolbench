@@ -187,7 +187,6 @@ export default ts.config(
       '**/nitro.config.*',
       '**/eslint-rules',
       'vitest.config.ts',
-      'scripts/**',
       '**/bin/**',
       '**/.terraform/**',
     ],

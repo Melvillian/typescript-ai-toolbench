@@ -8,8 +8,7 @@
   "packageManager": "bun@1.3.14",
   "scripts": {
     "build": "bun --filter '*' build",
-    "gen:build-order": "node scripts/gen-build-order.mjs",
-    "dev:api": "bun --filter './packages/*' build && bun --filter api dev",
+"dev:api": "bun --filter './packages/*' build && bun --filter api dev",
     "dev:cli": "bun --filter './packages/*' build && bun --filter cli start",
     "docker:build:api": "docker build -t template-typescript-monorepo-api -f apps/api/Dockerfile .",
     "docker:start:api": "docker run --rm --init -p 8080:80 template-typescript-monorepo-api",
