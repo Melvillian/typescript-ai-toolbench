@@ -14,32 +14,33 @@
 
 ## File Structure
 
-| File | Responsibility | Task |
-| --- | --- | --- |
-| `scripts/gen-build-order.mjs` (create) | Compute + write the topological root `build` script | 1 |
-| `scripts/gen-build-order.test.mjs` (create) | Unit tests for the pure ordering logic | 1 |
-| `vitest.config.ts` (modify) | Discover `scripts/**/*.test.mjs` | 1 |
-| `package.json` (modify) | Add `gen:build-order` script; fix `docker:*`; (auto) `build` chain | 1, 4 |
-| `packages/common-lib/src/utilities/env.ts` (create) | `getEnv`/`requireEnv` trimmed env helpers | 2 |
-| `packages/common-lib/src/utilities/env.test.ts` (create) | Tests for the helpers | 2 |
-| `packages/common-lib/src/index.ts` (modify) | Re-export env helpers | 2 |
-| `packages/claude-api/{package.json,src/callClaude.ts}` (modify) | Use `getEnv` for `ANTHROPIC_API_KEY` | 3 |
-| `packages/openai-summarizer/{package.json,src/index.ts}` (modify) | Use `getEnv` for `OPENAI_API_KEY` | 3 |
-| `.dockerignore` (modify) | Correct root-context excludes | 4 |
-| `apps/api/.dockerignore` (delete) | No-op for root-context build | 4 |
-| `apps/api/Dockerfile` (modify) | New node+bun build/run pattern | 5 |
-| `generators/src/commands/render-deploy.ts` (modify) | New Dockerfile template, drop per-app dockerignore, richer render.yaml, gen:build-order reminder | 6 |
-| `generators/src/commands/render-deploy.test.ts` (modify) | Assert new Dockerfile + render.yaml | 6 |
-| `.claude/skills/setup/SKILL.md` (modify) | Run `gen:build-order` step + maintaining note | 7 |
-| `.claude/commands/generate-render-deploy.md` (modify) | Drop per-app dockerignore step, add gen:build-order | 8 |
-| `CLAUDE.md` (modify) | Render Docker-vs-native, bun-mandatory, build-order notes | 8 |
-| `packages/CLAUDE.md` (modify) | Re-run `gen:build-order` after adding a package | 8 |
+| File                                                              | Responsibility                                                                                   | Task |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ---- |
+| `scripts/gen-build-order.mjs` (create)                            | Compute + write the topological root `build` script                                              | 1    |
+| `scripts/gen-build-order.test.mjs` (create)                       | Unit tests for the pure ordering logic                                                           | 1    |
+| `vitest.config.ts` (modify)                                       | Discover `scripts/**/*.test.mjs`                                                                 | 1    |
+| `package.json` (modify)                                           | Add `gen:build-order` script; fix `docker:*`; (auto) `build` chain                               | 1, 4 |
+| `packages/common-lib/src/utilities/env.ts` (create)               | `getEnv`/`requireEnv` trimmed env helpers                                                        | 2    |
+| `packages/common-lib/src/utilities/env.test.ts` (create)          | Tests for the helpers                                                                            | 2    |
+| `packages/common-lib/src/index.ts` (modify)                       | Re-export env helpers                                                                            | 2    |
+| `packages/claude-api/{package.json,src/callClaude.ts}` (modify)   | Use `getEnv` for `ANTHROPIC_API_KEY`                                                             | 3    |
+| `packages/openai-summarizer/{package.json,src/index.ts}` (modify) | Use `getEnv` for `OPENAI_API_KEY`                                                                | 3    |
+| `.dockerignore` (modify)                                          | Correct root-context excludes                                                                    | 4    |
+| `apps/api/.dockerignore` (delete)                                 | No-op for root-context build                                                                     | 4    |
+| `apps/api/Dockerfile` (modify)                                    | New node+bun build/run pattern                                                                   | 5    |
+| `generators/src/commands/render-deploy.ts` (modify)               | New Dockerfile template, drop per-app dockerignore, richer render.yaml, gen:build-order reminder | 6    |
+| `generators/src/commands/render-deploy.test.ts` (modify)          | Assert new Dockerfile + render.yaml                                                              | 6    |
+| `.claude/skills/setup/SKILL.md` (modify)                          | Run `gen:build-order` step + maintaining note                                                    | 7    |
+| `.claude/commands/generate-render-deploy.md` (modify)             | Drop per-app dockerignore step, add gen:build-order                                              | 8    |
+| `CLAUDE.md` (modify)                                              | Render Docker-vs-native, bun-mandatory, build-order notes                                        | 8    |
+| `packages/CLAUDE.md` (modify)                                     | Re-run `gen:build-order` after adding a package                                                  | 8    |
 
 ---
 
 ## Task 1: Deterministic build-order engine
 
 **Files:**
+
 - Create: `scripts/gen-build-order.mjs`
 - Create: `scripts/gen-build-order.test.mjs`
 - Modify: `vitest.config.ts`
@@ -134,12 +135,7 @@ Create `scripts/gen-build-order.mjs`:
 
 ```javascript
 #!/usr/bin/env node
-import {
-  existsSync,
-  readFileSync,
-  readdirSync,
-  writeFileSync,
-} from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -236,7 +232,10 @@ function main() {
   if (!buildRe.test(original)) {
     throw new Error('No "build" script found in root package.json');
   }
-  const updated = original.replace(buildRe, (_match, p1, p2) => p1 + script + p2);
+  const updated = original.replace(
+    buildRe,
+    (_match, p1, p2) => p1 + script + p2,
+  );
   if (updated === original) {
     console.log('Build order already up to date.');
     return;
@@ -298,6 +297,7 @@ git commit -m "feat: compute deterministic root build order from workspace graph
 ## Task 2: `getEnv`/`requireEnv` helper in common-lib
 
 **Files:**
+
 - Create: `packages/common-lib/src/utilities/env.ts`
 - Create: `packages/common-lib/src/utilities/env.test.ts`
 - Modify: `packages/common-lib/src/index.ts`
@@ -410,6 +410,7 @@ git commit -m "feat(common-lib): add trimmed getEnv/requireEnv helpers"
 ## Task 3: Refactor API-key readers to trim via `getEnv`
 
 **Files:**
+
 - Modify: `packages/claude-api/package.json`, `packages/claude-api/src/callClaude.ts`
 - Modify: `packages/openai-summarizer/package.json`, `packages/openai-summarizer/src/index.ts`
 
@@ -477,13 +478,13 @@ import { getEnv } from '@melvillian/common-lib';
 Replace line 26:
 
 ```typescript
-  const apiKey = options.apiKey ?? process.env['ANTHROPIC_API_KEY'];
+const apiKey = options.apiKey ?? process.env['ANTHROPIC_API_KEY'];
 ```
 
 with:
 
 ```typescript
-  const apiKey = options.apiKey ?? getEnv('ANTHROPIC_API_KEY');
+const apiKey = options.apiKey ?? getEnv('ANTHROPIC_API_KEY');
 ```
 
 - [ ] **Step 4: Refactor `openai-summarizer/index.ts`**
@@ -497,13 +498,13 @@ import { getEnv } from '@melvillian/common-lib';
 Replace line 33:
 
 ```typescript
-  const apiKey = validatedOptions.apiKey ?? process.env['OPENAI_API_KEY'];
+const apiKey = validatedOptions.apiKey ?? process.env['OPENAI_API_KEY'];
 ```
 
 with:
 
 ```typescript
-  const apiKey = validatedOptions.apiKey ?? getEnv('OPENAI_API_KEY');
+const apiKey = validatedOptions.apiKey ?? getEnv('OPENAI_API_KEY');
 ```
 
 - [ ] **Step 5: Regenerate the build order for the new graph**
@@ -533,6 +534,7 @@ git commit -m "refactor: trim API keys via common-lib getEnv"
 ## Task 4: Correct root `.dockerignore`, drop per-app, fix `docker:*` scripts
 
 **Files:**
+
 - Modify: `.dockerignore`
 - Delete: `apps/api/.dockerignore`
 - Modify: `package.json` (`docker:build:api`, `docker:start:api`)
@@ -590,6 +592,7 @@ git commit -m "fix: correct root .dockerignore and docker:* parity scripts"
 ## Task 5: Rewrite the committed `apps/api/Dockerfile`
 
 **Files:**
+
 - Modify: `apps/api/Dockerfile`
 
 - [ ] **Step 1: Replace the Dockerfile**
@@ -663,6 +666,7 @@ Expected: `{"status":"ok","timestamp":"..."}`. Stop the container with Ctrl-C.
 ## Task 6: Update the `render-deploy` generator and its tests
 
 **Files:**
+
 - Modify: `generators/src/commands/render-deploy.ts`
 - Modify: `generators/src/commands/render-deploy.test.ts`
 
@@ -701,7 +705,7 @@ describe('dockerfileContent', () => {
 Extend the existing `appendToRenderYaml` "writes a service entry" test — add one assertion inside it:
 
 ```typescript
-    expect(yaml).toContain('healthCheckPath: /health');
+expect(yaml).toContain('healthCheckPath: /health');
 ```
 
 - [ ] **Step 2: Run the tests to verify they fail**
@@ -768,7 +772,7 @@ async function generateDockerfile(basePath: string, appName: string) {
 (c) Enrich the render.yaml service entry. In `appendToRenderYaml`, replace the `serviceEntry` template literal with:
 
 ```typescript
-  const serviceEntry = `
+const serviceEntry = `
   - type: web
     name: ${serviceName}
     env: docker
@@ -791,22 +795,22 @@ async function generateDockerfile(basePath: string, appName: string) {
 (d) Update the action's "Next steps" output. Replace the steps block (the `console.log` calls after the success message) so it reminds the user to regenerate the build order (a new app changes the workspace graph):
 
 ```typescript
-      console.log('\n✓ Render deploy files generated successfully!');
-      console.log('\nNext steps:');
-      console.log(
-        '1. Regenerate the root build order (a new app changes the graph):',
-      );
-      console.log('   bun run gen:build-order');
-      console.log(
-        '2. Create a Blueprint in the Render dashboard pointing to render.yaml',
-      );
-      console.log(
-        '   (one-time setup: https://dashboard.render.com/select-repo?type=blueprint)',
-      );
-      console.log('3. Commit your changes:');
-      console.log('   git add -A && git commit');
-      console.log('4. Push to main to deploy:');
-      console.log('   git push origin main');
+console.log('\n✓ Render deploy files generated successfully!');
+console.log('\nNext steps:');
+console.log(
+  '1. Regenerate the root build order (a new app changes the graph):',
+);
+console.log('   bun run gen:build-order');
+console.log(
+  '2. Create a Blueprint in the Render dashboard pointing to render.yaml',
+);
+console.log(
+  '   (one-time setup: https://dashboard.render.com/select-repo?type=blueprint)',
+);
+console.log('3. Commit your changes:');
+console.log('   git add -A && git commit');
+console.log('4. Push to main to deploy:');
+console.log('   git push origin main');
 ```
 
 - [ ] **Step 4: Build and run the generator tests**
@@ -826,6 +830,7 @@ git commit -m "feat(generator): node+bun Dockerfile, richer render.yaml, drop pe
 ## Task 7: Wire `gen:build-order` into the `/setup` skill
 
 **Files:**
+
 - Modify: `.claude/skills/setup/SKILL.md`
 
 - [ ] **Step 1: Insert a build-order step between install and build**
@@ -874,6 +879,7 @@ git commit -m "docs(setup): run gen:build-order during setup and on module add"
 ## Task 8: Documentation (concepts + command doc)
 
 **Files:**
+
 - Modify: `.claude/commands/generate-render-deploy.md`
 - Modify: `CLAUDE.md`
 - Modify: `packages/CLAUDE.md`
@@ -927,14 +933,16 @@ Modify `CLAUDE.md` — append the following at the end of the existing "## Rende
 
 Modify `packages/CLAUDE.md` — at the end of the "## ✅ Required verification before considering a new package done" section, add:
 
-```markdown
+````markdown
 Then regenerate the root build order so the new package builds in dependency
 order (otherwise a clean `bun run build` can race):
 
 ```bash
 bun run gen:build-order
 ```
-```
+````
+
+````
 
 - [ ] **Step 4: Verify the docs reference real commands**
 
@@ -946,7 +954,7 @@ Expected: `Build order already up to date.` (confirms the command referenced thr
 ```bash
 git add .claude/commands/generate-render-deploy.md CLAUDE.md packages/CLAUDE.md
 git commit -m "docs: render docker-vs-native, bun-mandatory, and build-order notes"
-```
+````
 
 ---
 

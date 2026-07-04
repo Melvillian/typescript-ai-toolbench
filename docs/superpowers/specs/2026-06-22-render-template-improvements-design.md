@@ -124,6 +124,7 @@ Documented in §8 only. No code, no generator option.
 ### 6. Richer generated `render.yaml` (§6)
 
 Generator emits, per service:
+
 - `healthCheckPath: /health`.
 - A commented `sync: false` secret-key stub with a note that secrets are entered
   in the Render dashboard (encrypted, never in git).
@@ -149,6 +150,7 @@ Health path default `/health` (matches the api).
 
 Document, in README / relevant `CLAUDE.md` / the `generate-render-deploy`
 command doc:
+
 - Render Docker vs native runtime: with `env: docker`, build/run come from the
   **Dockerfile** (`RUN`/`CMD`), not `render.yaml` `buildCommand`/`startCommand`.
 - bun is mandatory for `workspace:*` installs (npm can't resolve the protocol).
