@@ -24,18 +24,14 @@ const renderDeploy = new Command('render-deploy')
       console.log('\n✓ Render deploy files generated successfully!');
       console.log('\nNext steps:');
       console.log(
-        '1. Regenerate the root build order (a new app changes the graph):',
-      );
-      console.log('   bun run gen:build-order');
-      console.log(
-        '2. Create a Blueprint in the Render dashboard pointing to render.yaml',
+        '1. Create a Blueprint in the Render dashboard pointing to render.yaml',
       );
       console.log(
         '   (one-time setup: https://dashboard.render.com/select-repo?type=blueprint)',
       );
-      console.log('3. Commit your changes:');
+      console.log('2. Commit your changes:');
       console.log('   git add -A && git commit');
-      console.log('4. Push to main to deploy:');
+      console.log('3. Push to main to deploy:');
       console.log('   git push origin main');
     } catch (error) {
       console.error('Error generating deploy files:', error);
