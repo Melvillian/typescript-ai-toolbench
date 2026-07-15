@@ -12,10 +12,10 @@ Add Render CD deployment capability to the app `apps/$ARGUMENTS.app-name`.
 
 1. First, verify that `apps/$ARGUMENTS.app-name` exists. If it doesn't, stop and tell the user.
 
-2. Build the generators package (required before running the CLI):
+2. Build the generators workspace (required before running the CLI):
 
    ```
-   cd generators && bun run build && cd ..
+   bun --filter generators build
    ```
 
 3. Run the render-deploy generator:

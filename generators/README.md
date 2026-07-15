@@ -4,12 +4,10 @@ This directory contains project generators for quickly scaffolding common projec
 
 ## Usage
 
-Build the generators:
+This directory is a bun workspace, so its dependencies are installed by `bun install` at the repo root. Build the generators:
 
 ```bash
-cd generators
-bun install
-bun run build
+bun --filter generators build
 ```
 
 Run a generator:

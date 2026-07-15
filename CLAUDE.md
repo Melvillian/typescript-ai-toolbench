@@ -6,6 +6,7 @@ TypeScript monorepo using Bun workspaces. Node >=22 required.
 
 - `apps/*` — Thin executable wrappers. Each app's entrypoint should do minimal work: parse CLI args or set up a server, then delegate to a package. Apps should not contain business logic.
 - `packages/*` — Importable TypeScript modules containing the actual logic. Each package exposes an interface that the corresponding app depends on and the package implements. There is no standard interface shape; it depends on what the module does.
+- `generators/` — Code generation CLI for scaffolding project files (e.g. Render deploy configs). A workspace like the others, so root `bun install`/`build`/`typecheck`/`lint`/`test` all cover it.
 
 ## Commands
 

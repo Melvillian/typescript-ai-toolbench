@@ -12,8 +12,8 @@
     "dev:cli": "bun --filter './packages/*' build && bun --filter cli start",
     "docker:build:api": "docker build -t template-typescript-monorepo-api -f apps/api/Dockerfile .",
     "docker:start:api": "docker run --rm --init -p 8080:80 template-typescript-monorepo-api",
-    "clean": "rimraf dist packages/**/dist apps/**/dist",
-    "clean:all": "rimraf dist node_modules packages/**/node_modules packages/**/dist apps/**/node_modules apps/**/dist",
+    "clean": "rimraf dist packages/**/dist apps/**/dist generators/dist",
+    "clean:all": "rimraf dist node_modules packages/**/node_modules packages/**/dist apps/**/node_modules apps/**/dist generators/node_modules generators/dist",
     "lint:check": "eslint .",
     "lint": "eslint . --fix",
     "typecheck": "bun --filter '*' typecheck",
@@ -27,7 +27,8 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "apps/*"
+      "apps/*",
+      "generators"
     ]
   },
   "keywords": [],
