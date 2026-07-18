@@ -13,7 +13,7 @@ app.get('/health', (req, res) => {
 
 // Example API endpoint
 app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello from Tailscale-enabled Render endpoint!' });
+  res.json({ message: 'Hello from the api endpoint!' });
 });
 
 // Root endpoint

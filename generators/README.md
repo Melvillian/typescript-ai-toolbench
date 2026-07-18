@@ -6,9 +6,17 @@ This directory contains project generators for quickly scaffolding common projec
 
 This directory is a bun workspace, so its dependencies are installed by `bun install` at the repo root. Build the generators:
 
+The expected way to use this generator is via Claude Code, which will build and run the `render-deploy` generator command
+
+````claude
+/generate-render-deploy
+```
+
+To build it manually, you can run:
+
 ```bash
 bun --filter generators build
-```
+````
 
 Run a generator:
 
@@ -18,22 +26,20 @@ bun bin/generator.js <generator-name> [options]
 
 ## Available Generators
 
-### tailscale-render-endpoint
+### render-deploy
 
-Generates a Tailscale-enabled Render private service with SSL termination.
+Adds Render deployment files (Dockerfile) and updates `render.yaml` for an app in `apps/`.
 
 ```bash
-bun bin/generator.js tailscale-render-endpoint -p ./my-project
+bun bin/generator.js render-deploy <app-name>
 ```
 
 This creates:
 
-- Dockerfile with Tailscale integration
-- render.yaml for Render deployment
-- Express server listening on port 80
-- Complete documentation and setup instructions
+- A Dockerfile for the app under `apps/<app-name>`
+- A service entry in the root `render.yaml`, named `<repository-name>-<app-name>`
 
-See the generated README.md for detailed setup and deployment instructions.
+After generating, create a Blueprint in the Render dashboard pointing to `render.yaml` (one-time setup), then commit and push to main to deploy.
 
 ## Adding New Generators
 
