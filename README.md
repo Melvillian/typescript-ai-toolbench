@@ -1,8 +1,8 @@
-# TypeScript + Cli + Rest API + (TODO) React App Mono Repository
+# A Toolbench of Typescript Apps & Packages To Start Off Your Web Services
 
 This is a template for a monorepo that uses best practices for building Typescript web services.
 
-It is what @Melvillian considers best practice in April 2026.
+It is what @Melvillian considers best practice in July 2026.
 
 ## Setup
 
@@ -24,16 +24,11 @@ See the [Environment variables](#environment-variables) section below for requir
 - Mono-repository using bun workspaces
 - TypeScript for type safety
 - ES Modules for fast builds
+- React 19 + Vite SPA (`apps/web`) with react-router and Tailwind CSS v4
+- Single-command dev (`bun run dev`) and prod (`bun run start`) flows
 - NodeNext node resolution
-- (TODO) React for UI
-- Tailwindcss for styling
-- Both (TODO) react and vanilla JS libraries
-- Command line, (TODO) React app, and web server
-- Vite for Bundling, CSS Handling, Live Reloading
 - CLI via @commander
 - Express for the API server
-- Hot reload of (TODO) React
-- Auto service restart for the web server
 - Prettier for code formatting
 - ESLint for linting
 - VSCode will auto-format on save and paste
@@ -42,26 +37,30 @@ See the [Environment variables](#environment-variables) section below for requir
 
 ## Commands
 
-| Command                    | Description                                           |
-| -------------------------- | ----------------------------------------------------- |
-| `bun run build`            | Build all packages and apps                           |
-| `bun run dev:cli`          | Build packages, then run the CLI app                  |
-| `bun run dev:api`          | Build packages, then run the API server in watch mode |
-| `bun run docker:build:api` | Build the API Docker image                            |
-| `bun run docker:start:api` | Run the API Docker image on port 8080                 |
-| `bun run test`             | Run tests (vitest)                                    |
-| `bun run test:watch`       | Run tests in watch mode                               |
-| `bun run test:coverage`    | Generate test coverage report                         |
-| `bun run lint`             | Lint and fix (eslint)                                 |
-| `bun run lint:check`       | Lint check only                                       |
-| `bun run typecheck`        | Type check all packages                               |
-| `bun run format`           | Format code (prettier)                                |
-| `bun run clean`            | Remove dist directories                               |
-| `bun run clean:all`        | Remove dist + node_modules                            |
-| `bun run cloc`             | Count lines of code                                   |
-| `bun run depcheck`         | Report unused dependencies                            |
+| Command                    | Description                                                                |
+| -------------------------- | -------------------------------------------------------------------------- |
+| `bun run build`            | Build all packages and apps                                                |
+| `bun run dev`              | Build packages, then start api (:8080) and web dev server (:5173) together |
+| `bun run dev:api`          | Build packages, then run the API server in watch mode                      |
+| `bun run dev:cli`          | Build packages, then run the CLI app                                       |
+| `bun run dev:web`          | Build packages, then run the Vite dev server                               |
+| `bun run docker:build:api` | Build the API + Web Docker image                                           |
+| `bun run docker:start:api` | Run the API Docker image on port 8080                                      |
+| `bun run start`            | Build everything, serve web app + API from Express                         |
+| `bun run test`             | Run tests (vitest)                                                         |
+| `bun run test:watch`       | Run tests in watch mode                                                    |
+| `bun run test:coverage`    | Generate test coverage report                                              |
+| `bun run lint`             | Lint and fix (eslint)                                                      |
+| `bun run lint:check`       | Lint check only                                                            |
+| `bun run typecheck`        | Type check all packages                                                    |
+| `bun run format`           | Format code (prettier)                                                     |
+| `bun run clean`            | Remove dist directories                                                    |
+| `bun run clean:all`        | Remove dist + node_modules                                                 |
+| `bun run cloc`             | Count lines of code                                                        |
+| `bun run depcheck`         | Report unused dependencies                                                 |
 
 ## Environment variables
 
+- `PORT` — API listen port; defaults to 8080 locally (no `.env` needed), and the Docker image sets 80 for production. Optionally override via `apps/api/.env` (see `apps/api/.env.example`)
 - `OPENAI_API_KEY` — Required for OpenAI-powered features (used by `openai-summarizer`)
 - `RENDER_API_KEY` — Optional, only needed for Render deployments

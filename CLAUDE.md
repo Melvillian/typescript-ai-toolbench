@@ -6,15 +6,19 @@ TypeScript monorepo using Bun workspaces. Node >=22 required.
 
 - `apps/*` — Thin executable wrappers. Each app's entrypoint should do minimal work: parse CLI args or set up a server, then delegate to a package. Apps should not contain business logic.
 - `packages/*` — Importable TypeScript modules containing the actual logic. Each package exposes an interface that the corresponding app depends on and the package implements. There is no standard interface shape; it depends on what the module does.
-- `generators/` — Code generation CLI for scaffolding project files (e.g. Render deploy configs). A workspace like the others, so root `bun install`/`build`/`typecheck`/`lint`/`test` all cover it.
+-  `generators/` — Code generation CLI for scaffolding project files (e.g. Render deploy configs). A workspace like the others, so root `bun install`/`build`/`typecheck
+`/`lint`/`test` all cover it.
 
 ## Commands
 
 - `bun run build` - Build all packages and apps
-- `bun run dev:cli` - Build packages, then run CLI app
+- `bun run dev` - Build packages, then start api (:8080) and web dev server with HMR (:5173) together
 - `bun run dev:api` - Build packages, then run API server in watch mode
+- `bun run dev:cli` - Build packages, then run CLI app
+- `bun run dev:web` - Build packages, then run the Vite dev server
 - `bun run docker:build:api` - Build the API Docker image (from committed files)
 - `bun run docker:start:api` - Run the API Docker image on port 8080
+- `bun run start` - Build everything, then serve web app + API from Express
 - `bun run test` - Run tests (vitest)
 - `bun run test:watch` - Run tests in watch mode
 - `bun run test:coverage` - Generate test coverage report

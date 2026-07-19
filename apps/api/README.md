@@ -4,7 +4,7 @@ This project sets up a Node.js/Express server deployed to Render via Docker with
 
 - Runs as a Render web service with a public URL
 - Deploys automatically on push to `main`
-- Listens on port 80 (HTTP)
+- Listens on port 80 (HTTP) in production (the Docker image sets `PORT=80`); defaults to 8080 locally
 - Render handles SSL termination
 
 ## Architecture
@@ -60,10 +60,10 @@ bun run dev
 
 ## Environment Variables
 
-| Variable   | Description       | Required                 |
-| ---------- | ----------------- | ------------------------ |
-| `PORT`     | Port to listen on | No (default: 80)         |
-| `NODE_ENV` | Node environment  | No (default: production) |
+| Variable   | Description       | Required                                 |
+| ---------- | ----------------- | ---------------------------------------- |
+| `PORT`     | Port to listen on | No (default: 8080; Docker image sets 80) |
+| `NODE_ENV` | Node environment  | No (default: production)                 |
 
 ## How It Works
 

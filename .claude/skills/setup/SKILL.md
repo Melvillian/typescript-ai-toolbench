@@ -82,7 +82,7 @@ Check for environment variables that packages in this repo may need at runtime. 
 
 - `OPENAI_API_KEY` — Used by the `openai-summarizer` package for OpenAI API calls. Check if it is set in the current shell environment. If not, warn the user that they'll need to set it before using the CLI or any feature that calls OpenAI.
 
-Also check if `apps/api/.env.example` exists and remind the user to copy it to `apps/api/.env` if they plan to run the API server locally (check if `apps/api/.env` already exists first — if it does, skip this).
+No `.env` is needed to run the API server locally — it defaults to port 8080, which is what the Vite dev proxy targets. `apps/api/.env.example` exists only as a template for overriding `PORT`; mention it to the user only if they want a non-default port (and note the Vite proxy in `apps/web/vite.config.ts` must be updated to match).
 
 ## 11. Summary
 
@@ -105,6 +105,8 @@ If everything passed, tell the user they're good to go and remind them of the ke
 
 - `bun run docker:build:api` — build the API server app docker image
 - `bun run docker:start:api` - run the API server app in docker
+- `bun run dev` — Start api and web dev servers together
+- `bun run start` — Build and serve the web app + API from Express
 - `bun run dev:cli` — Run the CLI
 - `bun run test` — Run tests
 - `bun run lint` — Lint and fix
