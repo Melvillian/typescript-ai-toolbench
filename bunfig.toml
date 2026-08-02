@@ -1,0 +1,14 @@
+[run]
+elide-lines = 0
+
+[console]
+# this is to get rid of annoying console.log output with JSON objects
+# for instance:
+# UnknownCategoryErr: UnknownCategoryErr: Unknown category "Entertainment" returned for row 26
+#  context: {
+#   globalRowIndex: 26,
+#   rowIndexInBatch: 26,
+#   returnedCategory: "Entertainment",
+#   row: [Object ...],
+# },
+depth=8
