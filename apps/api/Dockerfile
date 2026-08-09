@@ -12,9 +12,10 @@ COPY . .
 RUN bun install --frozen-lockfile
 RUN bun run build
 
-# Stage 2: Slim runtime. Node major MUST match the builder (ABI) so any native
-# addon loads; bun@1.3.14 embeds Node 24.
-FROM node:24-bookworm-slim
+# Stage 2: Slim Bun runtime. Same bun version as the builder so any native
+# addon compiled during bun install loads against the same embedded Node ABI
+# (bun@1.3.14 embeds Node 24).
+FROM oven/bun:1.3.14-slim
 
 WORKDIR /app
 
@@ -25,5 +26,8 @@ ENV NODE_ENV=production PORT=80
 
 EXPOSE 80
 
-# Run under Node, not a bun-compiled binary.
-CMD ["node", "apps/api/dist/main.js"]
+# Run under Bun as an interpreter — never `bun build --compile`: the
+# single-binary pattern shipped without node_modules or on-disk assets and
+# broke native addons and runtime file reads (see
+# docs/superpowers/specs/2026-06-22-render-template-improvements-design.md).
+CMD ["bun", "apps/api/dist/main.js"]
