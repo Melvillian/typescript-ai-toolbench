@@ -1,5 +1,9 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import { Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
+import { serveStatic } from 'hono/serve-static';
 
 export interface AppOptions {
   /** Absolute path to the built apps/web SPA; omit to run API-only. */
@@ -34,8 +38,42 @@ export function createApp(options: AppOptions = {}): Hono {
   app.all('/api', (c) => c.json({ error: 'not found' }, 404));
   app.all('/api/*', (c) => c.json({ error: 'not found' }, 404));
 
-  // Task 2 adds static serving + SPA fallback here, gated on options.webDist
-  void options;
+  // Static web app. Handlers run in registration order, so the API routes
+  // above always win; the static middleware calls next() on a miss, landing
+  // on the SPA fallback so react-router deep links (e.g. /about) survive a
+  // refresh. Uses the runtime-agnostic hono/serve-static base with node:fs
+  // readers (Bun implements node:fs natively) — NOT hono/bun's serveStatic,
+  // whose handler needs the Bun global and would crash vitest, which runs
+  // under Node. With path.join injected, an absolute webDist root is fine.
+  if (options.webDist) {
+    const webDist = options.webDist;
+    app.use(
+      '*',
+      serveStatic({
+        root: webDist,
+        join: path.join,
+        isDir: async (p) => {
+          try {
+            return (await fs.promises.stat(p)).isDirectory();
+          } catch {
+            return false;
+          }
+        },
+        getContent: async (p) => {
+          try {
+            return await fs.promises.readFile(p);
+          } catch {
+            return null;
+          }
+        },
+      }),
+    );
+    app.get('*', async (c) =>
+      c.html(
+        await fs.promises.readFile(path.join(webDist, 'index.html'), 'utf8'),
+      ),
+    );
+  }
 
   return app;
 }

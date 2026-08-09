@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+import { afterAll, describe, expect, it } from 'vitest';
 
 import { createApp } from './app.js';
 
@@ -42,5 +46,47 @@ describe('API routes', () => {
   it('non-API paths 404 when no webDist is configured', async () => {
     const res = await app.request('/about');
     expect(res.status).toBe(404);
+  });
+});
+
+describe('static web app serving', () => {
+  const webDist = fs.mkdtempSync(path.join(os.tmpdir(), 'api-webdist-'));
+  fs.writeFileSync(
+    path.join(webDist, 'index.html'),
+    '<!doctype html><title>spa-fixture</title>',
+  );
+  fs.mkdirSync(path.join(webDist, 'assets'));
+  fs.writeFileSync(
+    path.join(webDist, 'assets', 'app.js'),
+    'console.log("hi");',
+  );
+  const app = createApp({ webDist });
+
+  afterAll(() => {
+    fs.rmSync(webDist, { recursive: true, force: true });
+  });
+
+  it('serves static files from webDist', async () => {
+    const res = await app.request('/assets/app.js');
+    expect(res.status).toBe(200);
+    expect(await res.text()).toBe('console.log("hi");');
+  });
+
+  it('serves index.html at the root', async () => {
+    const res = await app.request('/');
+    expect(res.status).toBe(200);
+    expect(await res.text()).toContain('spa-fixture');
+  });
+
+  it('falls back to index.html for react-router paths on refresh', async () => {
+    const res = await app.request('/about');
+    expect(res.status).toBe(200);
+    expect(await res.text()).toContain('spa-fixture');
+  });
+
+  it('still returns a JSON 404 for unknown /api/* paths', async () => {
+    const res = await app.request('/api/nope');
+    expect(res.status).toBe(404);
+    expect(await res.json()).toEqual({ error: 'not found' });
   });
 });
