@@ -11,17 +11,18 @@ import {
 } from './render-deploy.js';
 
 describe('dockerfileContent', () => {
-  it('builds with node + bun and runs under node (no --compile binary)', () => {
+  it('builds with node + bun and runs under bun (no --compile binary)', () => {
     const df = dockerfileContent('api');
     expect(df).toContain('FROM node:24-bookworm AS builder');
     expect(df).toContain('RUN bun run build');
-    expect(df).toContain('CMD ["node", "apps/api/dist/main.js"]');
+    expect(df).toContain('FROM oven/bun:1.3.14-slim');
+    expect(df).toContain('CMD ["bun", "apps/api/dist/main.js"]');
     expect(df).not.toContain('--compile');
   });
 
   it('interpolates the app name into the CMD path', () => {
     expect(dockerfileContent('worker')).toContain(
-      'CMD ["node", "apps/worker/dist/main.js"]',
+      'CMD ["bun", "apps/worker/dist/main.js"]',
     );
   });
 });
