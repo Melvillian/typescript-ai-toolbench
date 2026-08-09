@@ -107,7 +107,9 @@ concurrently via repeated `--filter` flags — no `concurrently` dep needed):
   the `dotenv` dependency and `import 'dotenv/config'` at the top of
   `main.ts`, loading `apps/api/.env` in every mode. dotenv never overrides
   variables already set in the environment, so Docker's `PORT=80` wins
-  (and `.env` is dockerignored anyway).
+  (and `.env` is dockerignored anyway). (As of the 2026-08-09 migration onto
+  the Bun runtime, the `dotenv` dependency was removed — Bun loads `.env`
+  natively with the same override semantics described above.)
 
 ## Docker / CI
 
