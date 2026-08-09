@@ -26,8 +26,8 @@ ENV NODE_ENV=production PORT=80
 
 EXPOSE 80
 
-# Run under Bun as an interpreter — never `bun build --compile`: the
-# single-binary pattern shipped without node_modules or on-disk assets and
-# broke native addons and runtime file reads (see
+# Run under Bun as an interpreter. Do not compile to a single binary: that
+# pattern shipped without node_modules or on-disk assets and broke native
+# addons and runtime file reads (see
 # docs/superpowers/specs/2026-06-22-render-template-improvements-design.md).
 CMD ["bun", "apps/api/dist/main.js"]
