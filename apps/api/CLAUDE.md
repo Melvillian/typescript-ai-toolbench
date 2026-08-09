@@ -2,7 +2,7 @@
 
 ## Overview
 
-Express HTTP API server. Also serves the built `apps/web` SPA (static files +
+Hono HTTP API server running on Bun. Routes live in src/app.ts (a runtime-agnostic createApp factory, tested via app.request() under vitest); src/main.ts is the Bun.serve entrypoint that resolves webDist. Also serves the built `apps/web` SPA (static files +
 SPA fallback) when `apps/web/dist` exists; otherwise runs API-only with a
 warning. Part of the monorepo workspace.
 
@@ -22,18 +22,17 @@ warning. Part of the monorepo workspace.
   relative to `src/main.ts` / `dist/main.js`); use an absolute path — a
   relative value resolves against the process cwd, which varies by launch
   style
-- `.env` is loaded via dotenv at startup; real environment variables win.
+- `.env` is loaded natively by Bun at startup; real environment variables win.
 
 ## Commands
 
 - `bun run build` - Compile TypeScript (`tsc`)
-- `bun run start` - Run compiled server (`node dist/main.js`)
-- `bun run dev` - Dev mode with watch (`tsx watch src/main.ts`)
+- `bun run start` - Run compiled server (`bun dist/main.js`)
+- `bun run dev` - Dev mode with watch (`bun --watch src/main.ts`)
 
 ## Dependencies
 
-- **express** (^4.18.2) - HTTP server framework
-- **dotenv** (^16.4.5) - Loads `.env` at startup
+- **hono** (^4.13.1) - HTTP server framework (served via Bun.serve)
 
 ## Auto-Update Instructions
 

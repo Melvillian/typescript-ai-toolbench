@@ -1,6 +1,6 @@
 # Render Web Service
 
-This project sets up a Node.js/Express server deployed to Render via Docker with Continuous Deployment.
+This project sets up a Bun/Hono server deployed to Render via Docker with Continuous Deployment.
 
 - Runs as a Render web service with a public URL
 - Deploys automatically on push to `main`
@@ -10,7 +10,7 @@ This project sets up a Node.js/Express server deployed to Render via Docker with
 ## Architecture
 
 ```
-Internet (HTTPS) → Render SSL Termination → Docker Container (HTTP:80) → Express Server
+Internet (HTTPS) → Render SSL Termination → Docker Container (HTTP:80) → Hono Server (Bun)
 ```
 
 ## Prerequisites

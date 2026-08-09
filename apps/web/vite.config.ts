@@ -5,7 +5,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    // Forward API calls to the Express dev server (apps/api, PORT=8080).
+    // Forward API calls to the Hono dev server (apps/api, PORT=8080).
     proxy: {
       '/api': 'http://localhost:8080',
       '/health': 'http://localhost:8080',

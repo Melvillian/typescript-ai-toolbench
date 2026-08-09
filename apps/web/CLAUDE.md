@@ -3,8 +3,8 @@
 ## Overview
 
 Vite + React 19 + TypeScript SPA with react-router and Tailwind CSS v4.
-Built to `dist/` and served in production by `apps/api` (Express static +
-SPA fallback). In dev, Vite proxies `/api` and `/health` to Express on :8080.
+Built to `dist/` and served in production by `apps/api` (Hono static +
+SPA fallback). In dev, Vite proxies `/api` and `/health` to Hono on :8080.
 
 ## Commands
 

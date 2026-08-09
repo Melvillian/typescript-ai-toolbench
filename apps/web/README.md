@@ -1,14 +1,14 @@
 # web
 
 Minimal Vite + React + TypeScript single-page app. Served in production by
-`apps/api` (Express) from this app's `dist/` build output; in dev, Vite's
-dev server proxies `/api` and `/health` to Express on :8080.
+`apps/api` (Hono) from this app's `dist/` build output; in dev, Vite's
+dev server proxies `/api` and `/health` to Hono on :8080.
 
 ## Commands (run from repo root)
 
-- `bun run dev` — start Express (:8080) and Vite with HMR (:5173) together
+- `bun run dev` — start Hono (:8080) and Vite with HMR (:5173) together
 - `bun run dev:web` — Vite dev server alone
-- `bun run start` — build everything, serve app + API from Express (:8080)
+- `bun run start` — build everything, serve app + API from Hono (:8080)
 - `bun --filter web test` — run this app's tests
 - `bun --filter web lint` — lint this app
 

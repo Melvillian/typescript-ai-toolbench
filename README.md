@@ -28,7 +28,7 @@ See the [Environment variables](#environment-variables) section below for requir
 - Single-command dev (`bun run dev`) and prod (`bun run start`) flows
 - NodeNext node resolution
 - CLI via @commander
-- Express for the API server
+- Hono (on the Bun runtime) for the API server
 - Prettier for code formatting
 - ESLint for linting
 - VSCode will auto-format on save and paste
@@ -46,7 +46,7 @@ See the [Environment variables](#environment-variables) section below for requir
 | `bun run dev:web`          | Build packages, then run the Vite dev server                               |
 | `bun run docker:build:api` | Build the API + Web Docker image                                           |
 | `bun run docker:start:api` | Run the API Docker image on port 8080                                      |
-| `bun run start`            | Build everything, serve web app + API from Express                         |
+| `bun run start`            | Build everything, serve web app + API from Hono                            |
 | `bun run test`             | Run tests (vitest)                                                         |
 | `bun run test:watch`       | Run tests in watch mode                                                    |
 | `bun run test:coverage`    | Generate test coverage report                                              |

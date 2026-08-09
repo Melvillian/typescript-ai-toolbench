@@ -42,8 +42,8 @@ export default function Home() {
     <section>
       <h1 className="mb-4 text-2xl font-bold">Home</h1>
       <p className="mb-2">
-        This starter page calls <code>GET /api/hello</code> on the Express
-        server to prove the web → api wiring:
+        This starter page calls <code>GET /api/hello</code> on the Hono server
+        to prove the web → api wiring:
       </p>
       {api.status === 'loading' && <p className="text-gray-500">Loading…</p>}
       {api.status === 'ok' && (

@@ -13,7 +13,7 @@ export interface AppOptions {
 export function createApp(options: AppOptions = {}): Hono {
   const app = new Hono();
 
-  // 10mb body cap — parity with the old express.json({ limit: '10mb' })
+  // 10mb body cap — parity with the pre-migration middleware's limit
   app.use(bodyLimit({ maxSize: 10 * 1024 * 1024 }));
 
   app.get('/health', (c) =>
