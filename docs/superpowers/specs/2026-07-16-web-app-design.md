@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-16
 **Status:** Approved
-**Updated:** 2026-08-09 — the API server has since been migrated from Express (Node) to Hono (Bun); server references below were updated to match.
+**Updated:** 2026-08-09 — the API server has since been migrated to Hono on the Bun runtime; server references below were updated to match.
 
 ## Goal
 
