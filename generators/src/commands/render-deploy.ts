@@ -7,19 +7,28 @@ const RENDER_YAML_PATH = 'render.yaml';
 
 const renderDeploy = new Command('render-deploy')
   .description(
-    'Add Render deployment files (Dockerfile) and update render.yaml for an app in apps/',
+    'Add Render deployment config for an app in apps/: a static site entry in render.yaml (--static), or a Dockerfile plus a Docker web service entry (default)',
   )
   .argument(
     '<app-name>',
     'Name of the app directory under apps/ (e.g. my-service)',
   )
-  .action(async (appName: string) => {
+  .option(
+    '--static',
+    'Deploy as a Render static site (no server, no Dockerfile; the app must build to apps/<app-name>/dist)',
+  )
+  .action(async (appName: string, options: { static?: boolean }) => {
     const targetPath = join('apps', appName);
+    const isStatic = options.static ?? false;
     console.log(`Adding Render deploy files to: ${targetPath}`);
 
     try {
-      await generateDockerfile(targetPath, appName);
-      await appendToRenderYaml(appName, basename(process.cwd()));
+      if (!isStatic) {
+        await generateDockerfile(targetPath, appName);
+      }
+      await appendToRenderYaml(appName, basename(process.cwd()), undefined, {
+        static: isStatic,
+      });
 
       console.log('\n✓ Render deploy files generated successfully!');
       console.log('\nNext steps:');
@@ -29,8 +38,18 @@ const renderDeploy = new Command('render-deploy')
       console.log(
         '   (one-time setup: https://dashboard.render.com/select-repo?type=blueprint)',
       );
-      console.log('2. Commit your changes:');
-      console.log('   git add -A && git commit');
+      if (isStatic) {
+        console.log(
+          '2. If this app fetches same-origin /api/* from a sibling web service,',
+        );
+        console.log(
+          '   fill in the commented rewrite in render.yaml with that service’s',
+        );
+        console.log('   real .onrender.com URL (known after its first deploy)');
+      } else {
+        console.log('2. Commit your changes:');
+        console.log('   git add -A && git commit');
+      }
       console.log('3. Push to main to deploy:');
       console.log('   git push origin main');
     } catch (error) {
@@ -88,13 +107,35 @@ export function serviceNameFor(repoName: string, appName: string): string {
   return `${repoName}-${appName}`;
 }
 
-export async function appendToRenderYaml(
-  appName: string,
-  repoName: string,
-  renderYamlPath: string = RENDER_YAML_PATH,
-) {
-  const serviceName = serviceNameFor(repoName, appName);
-  const serviceEntry = `
+// Static sites have no fixed compute cost (a Docker web service is $7+/mo),
+// build in Render's native environment (bun is included via the root
+// bun.lock, pinned by .bun-version), and serve from Render's CDN.
+function staticSiteEntry(appName: string, serviceName: string): string {
+  return `
+  - type: web
+    name: ${serviceName}
+    runtime: static
+    autoDeploy: true
+    buildCommand: bun install --frozen-lockfile && bun run build
+    staticPublishPath: apps/${appName}/dist
+    routes:
+      # Hybrid pattern: if this app fetches same-origin /api/* implemented by a
+      # sibling web service, uncomment and set the destination to that
+      # service's real .onrender.com URL (known only after its first deploy).
+      # Must come before the /* fallback — routes match in order.
+      # - type: rewrite
+      #   source: /api/*
+      #   destination: https://<repo>-api-<suffix>.onrender.com/api/*
+      # SPA fallback: existing files are served directly; everything else
+      # rewrites to index.html. Remove for non-SPA (multi-page) sites.
+      - type: rewrite
+        source: /*
+        destination: /index.html
+`;
+}
+
+function dockerServiceEntry(appName: string, serviceName: string): string {
+  return `
   - type: web
     name: ${serviceName}
     env: docker
@@ -112,6 +153,18 @@ export async function appendToRenderYaml(
       # - key: SOME_API_KEY
       #   sync: false
 `;
+}
+
+export async function appendToRenderYaml(
+  appName: string,
+  repoName: string,
+  renderYamlPath: string = RENDER_YAML_PATH,
+  options: { static?: boolean } = {},
+) {
+  const serviceName = serviceNameFor(repoName, appName);
+  const serviceEntry = options.static
+    ? staticSiteEntry(appName, serviceName)
+    : dockerServiceEntry(appName, serviceName);
 
   let existing = '';
   try {

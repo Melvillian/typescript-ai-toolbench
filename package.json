@@ -1,5 +1,5 @@
 {
-  "name": "notion-block-review",
+  "name": "typescript-ai-toolbench",
   "version": "1.6.0",
   "private": true,
   "description": "",
@@ -13,8 +13,8 @@
     "dev:cli": "bun --elide-lines=0 --filter './packages/*' build && bun --elide-lines=0 --filter cli start",
     "dev:web": "bun --elide-lines=0 --filter './packages/*' build && bun --elide-lines=0 --filter web dev",
     "start": "bun run build && bun --elide-lines=0 --filter api start",
-    "docker:build:api": "docker build -t notion-block-review-api -f apps/api/Dockerfile .",
-    "docker:start:api": "docker run --rm --init -p 8080:80 notion-block-review-api",
+    "docker:build:api": "docker build -t typescript-ai-toolbench-api -f apps/api/Dockerfile .",
+    "docker:start:api": "docker run --rm --init -p 8080:80 typescript-ai-toolbench-api",
     "clean": "rimraf dist packages/**/dist apps/**/dist",
     "clean:all": "rimraf dist node_modules packages/**/node_modules packages/**/dist apps/**/node_modules apps/**/dist",
     "lint:check": "eslint .",
@@ -30,7 +30,8 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "apps/*"
+      "apps/*",
+      "generators"
     ]
   },
   "keywords": [],

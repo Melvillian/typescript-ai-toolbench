@@ -66,4 +66,55 @@ describe('appendToRenderYaml', () => {
     const occurrences = yaml.match(/name: caroline-nanny-website-api/g) ?? [];
     expect(occurrences).toHaveLength(1);
   });
+
+  describe('static mode', () => {
+    it('writes a static site entry with build command, publish path, and SPA fallback', async () => {
+      await appendToRenderYaml('web', 'caroline-nanny-website', yamlPath, {
+        static: true,
+      });
+
+      const yaml = await readFile(yamlPath, 'utf-8');
+      expect(yaml).toContain('name: caroline-nanny-website-web');
+      expect(yaml).toContain('runtime: static');
+      expect(yaml).toContain(
+        'buildCommand: bun install --frozen-lockfile && bun run build',
+      );
+      expect(yaml).toContain('staticPublishPath: apps/web/dist');
+      expect(yaml).toContain('destination: /index.html');
+    });
+
+    it('does not include web-service-only fields', async () => {
+      await appendToRenderYaml('web', 'caroline-nanny-website', yamlPath, {
+        static: true,
+      });
+
+      const yaml = await readFile(yamlPath, 'utf-8');
+      expect(yaml).not.toContain('dockerfilePath');
+      expect(yaml).not.toContain('env: docker');
+      expect(yaml).not.toContain('healthCheckPath');
+    });
+
+    it('skips appending when the derived service name already exists', async () => {
+      await appendToRenderYaml('web', 'caroline-nanny-website', yamlPath, {
+        static: true,
+      });
+      await appendToRenderYaml('web', 'caroline-nanny-website', yamlPath, {
+        static: true,
+      });
+
+      const yaml = await readFile(yamlPath, 'utf-8');
+      const occurrences = yaml.match(/name: caroline-nanny-website-web/g) ?? [];
+      expect(occurrences).toHaveLength(1);
+    });
+
+    it('includes a commented hybrid rewrite template for same-repo /api calls', async () => {
+      await appendToRenderYaml('web', 'caroline-nanny-website', yamlPath, {
+        static: true,
+      });
+
+      const yaml = await readFile(yamlPath, 'utf-8');
+      expect(yaml).toContain('# - type: rewrite');
+      expect(yaml).toContain('#   source: /api/*');
+    });
+  });
 });

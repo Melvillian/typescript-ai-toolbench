@@ -18,7 +18,7 @@ TypeScript monorepo using Bun workspaces. Node >=22 required.
 - `bun run dev:web` - Build packages, then run the Vite dev server
 - `bun run docker:build:api` - Build the API Docker image (from committed files)
 - `bun run docker:start:api` - Run the API Docker image on port 8080
-- `bun run start` - Build everything, then serve web app + API from Hono
+- `bun run start` - Build everything, then run the API server (API-only; the web app deploys as a static site)
 - `bun run test` - Run tests (vitest)
 - `bun run test:watch` - Run tests in watch mode
 - `bun run test:coverage` - Generate test coverage report
@@ -37,22 +37,9 @@ TypeScript monorepo using Bun workspaces. Node >=22 required.
 
 ### Deploy concepts
 
-- **Docker vs native runtime:** services use `env: docker`, so build and run come
-  from the **Dockerfile** (`RUN`/`CMD`) — NOT `render.yaml`
-  `buildCommand`/`startCommand` (those are native-runtime only). The Dockerfile is
-  the single source of truth, giving local == Render parity. Reproduce a Render
-  build locally with `bun run docker:build:api` (directory
-  context `.`, so the root `.dockerignore` applies). The build uses your working
-  tree as-is — commit and push first if you want it to mirror exactly what Render
-  builds from your branch.
-- **bun is mandatory** in the Dockerfile: npm cannot resolve the `workspace:*`
-  protocol. Build in a `node:24-bookworm` image with bun installed (node ships
-  the compilers for native addons and runs tsc), then run under Bun
-  (`oven/bun:1.3.14-slim`). Builder and runtime pin the same bun version so
-  native addons compiled at install time load against the same embedded Node
-  ABI (bun@1.3.14 embeds Node 24). Never use `bun build --compile`
-  single-binary images — that pattern broke native addons and runtime file
-  reads (see docs/superpowers/specs/2026-06-22-render-template-improvements-design.md).
-- **Build order:** `bun run build` is `bun --filter '*' build`, which builds every
-  workspace in dependency order automatically (requires Bun >= 1.3.9). No manual
-  step is needed when adding a package or app.
+- Deploy concepts (static site vs web service decision, blueprint patterns,
+  bun requirements, build order) live in the `render-deploys` skill.
+- **Static-site-first**: frontend apps deploy as Render static sites by
+  default (free, CDN-served). `apps/api` is API-only — it does NOT serve
+  `apps/web`; in production the static site's `/api/*` rewrite proxies to the
+  api service (hybrid pattern).

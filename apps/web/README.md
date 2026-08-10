@@ -1,14 +1,15 @@
 # web
 
-Minimal Vite + React + TypeScript single-page app. Served in production by
-`apps/api` (Hono) from this app's `dist/` build output; in dev, Vite's
-dev server proxies `/api` and `/health` to Hono on :8080.
+Minimal Vite + React + TypeScript single-page app. Deployed in production as
+a Render static site from this app's `dist/` build output, with an `/api/*`
+rewrite proxying to `apps/api` (see the `render-deploys` skill); in dev,
+Vite's dev server proxies `/api` and `/health` to Hono on :8080.
 
 ## Commands (run from repo root)
 
 - `bun run dev` — start Hono (:8080) and Vite with HMR (:5173) together
 - `bun run dev:web` — Vite dev server alone
-- `bun run start` — build everything, serve app + API from Hono (:8080)
+- `bun run start` — build everything, run the API server (:8080)
 - `bun --filter web test` — run this app's tests
 - `bun --filter web lint` — lint this app
 
@@ -28,8 +29,9 @@ to :8080, the port Vite's proxy targets. If you do set a different `PORT` in
 
 - New page: add `src/pages/Foo.tsx`, register it in `src/routes.tsx`, link it
   from `App.tsx`.
-- New API call: fetch relative paths (`/api/...`) — same-origin in prod,
-  proxied in dev. Add new proxy prefixes in `vite.config.ts` if you add API
+- New API call: fetch relative paths (`/api/...`) — rewritten to the api
+  service in prod, proxied in dev. Add new proxy prefixes in
+  `vite.config.ts` (and matching rewrites in `render.yaml`) if you add API
   routes outside `/api`.
 - State/UI libraries: install into this workspace
   (`cd apps/web && bun add <pkg>`).

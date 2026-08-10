@@ -24,7 +24,7 @@ See the [Environment variables](#environment-variables) section below for requir
 - Mono-repository using bun workspaces
 - TypeScript for type safety
 - ES Modules for fast builds
-- React 19 + Vite SPA (`apps/web`) with react-router and Tailwind CSS v4
+- React 19 + Vite SPA (`apps/web`) with react-router and Tailwind CSS v4, deployed as a Render static site
 - Single-command dev (`bun run dev`) and prod (`bun run start`) flows
 - NodeNext node resolution
 - CLI via @commander
@@ -44,9 +44,9 @@ See the [Environment variables](#environment-variables) section below for requir
 | `bun run dev:api`          | Build packages, then run the API server in watch mode                      |
 | `bun run dev:cli`          | Build packages, then run the CLI app                                       |
 | `bun run dev:web`          | Build packages, then run the Vite dev server                               |
-| `bun run docker:build:api` | Build the API + Web Docker image                                           |
+| `bun run docker:build:api` | Build the API Docker image                                                 |
 | `bun run docker:start:api` | Run the API Docker image on port 8080                                      |
-| `bun run start`            | Build everything, serve web app + API from Hono                            |
+| `bun run start`            | Build everything, run the API server (API-only)                            |
 | `bun run test`             | Run tests (vitest)                                                         |
 | `bun run test:watch`       | Run tests in watch mode                                                    |
 | `bun run test:coverage`    | Generate test coverage report                                              |

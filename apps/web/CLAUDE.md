@@ -3,8 +3,9 @@
 ## Overview
 
 Vite + React 19 + TypeScript SPA with react-router and Tailwind CSS v4.
-Built to `dist/` and served in production by `apps/api` (Hono static +
-SPA fallback). In dev, Vite proxies `/api` and `/health` to Hono on :8080.
+Built to `dist/` and deployed as a Render static site (SPA-fallback rewrite;
+`/api/*` rewrite proxies to the `apps/api` service — see the `render-deploys`
+skill). In dev, Vite proxies `/api` and `/health` to Hono on :8080.
 
 ## Commands
 
@@ -19,8 +20,8 @@ SPA fallback). In dev, Vite proxies `/api` and `/health` to Hono on :8080.
 
 - Add pages in `src/pages/`, register them in `src/routes.tsx`; `App.tsx`
   stays a pure layout shell.
-- Fetch APIs by relative path (`/api/...`) so dev proxy and prod same-origin
-  both work.
+- Fetch APIs by relative path (`/api/...`) so the dev proxy and the static
+  site's prod `/api/*` rewrite both work.
 - Standalone `tsconfig.json` (bundler resolution, `noEmit`) — does not extend
   the root NodeNext config, same pattern as `apps/api`.
 
