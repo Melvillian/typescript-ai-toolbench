@@ -25,7 +25,7 @@ See the [Environment variables](#environment-variables) section below for requir
 - TypeScript for type safety
 - ES Modules for fast builds
 - React 19 + Vite SPA (`apps/web`) with react-router and Tailwind CSS v4, deployed as a Render static site
-- Single-command dev (`bun run dev`) and prod (`bun run start`) flows
+- Single-command dev (`bun run dev`) and prod-build (`bun run start`) full-stack flows
 - NodeNext node resolution
 - CLI via @commander
 - Hono (on the Bun runtime) for the API server
@@ -46,7 +46,7 @@ See the [Environment variables](#environment-variables) section below for requir
 | `bun run dev:web`          | Build packages, then run the Vite dev server                               |
 | `bun run docker:build:api` | Build the API Docker image                                                 |
 | `bun run docker:start:api` | Run the API Docker image on port 8080                                      |
-| `bun run start`            | Build everything, run the API server (API-only)                            |
+| `bun run start`            | Build everything, then run the full stack: api (:8080) + web (:4173)       |
 | `bun run test`             | Run tests (vitest)                                                         |
 | `bun run test:watch`       | Run tests in watch mode                                                    |
 | `bun run test:coverage`    | Generate test coverage report                                              |
@@ -58,6 +58,17 @@ See the [Environment variables](#environment-variables) section below for requir
 | `bun run clean:all`        | Remove dist + node_modules                                                 |
 | `bun run cloc`             | Count lines of code                                                        |
 | `bun run depcheck`         | Report unused dependencies                                                 |
+
+`bun run start` is the go-to full-stack command: it builds everything, then
+runs the api (:8080) and the web app via `vite preview` (:4173). The preview
+server serves the production `dist/` bundle and proxies `/api` to the api —
+the same shape as production, where the Render static site's `/api/*` rewrite
+proxies to the api service.
+
+To run the full stack with the api in Docker instead (deploy parity), use two
+terminals: `bun run docker:build:api && bun run docker:start:api` in one, then
+`bun --filter web preview` in the other — the preview proxy targets :8080,
+which the Docker container publishes.
 
 ## Environment variables
 

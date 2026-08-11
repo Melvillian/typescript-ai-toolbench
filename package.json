@@ -12,7 +12,7 @@
     "dev:api": "bun --elide-lines=0 --filter './packages/*' build && bun --elide-lines=0 --filter api dev",
     "dev:cli": "bun --elide-lines=0 --filter './packages/*' build && bun --elide-lines=0 --filter cli start",
     "dev:web": "bun --elide-lines=0 --filter './packages/*' build && bun --elide-lines=0 --filter web dev",
-    "start": "bun run build && bun --elide-lines=0 --filter api start",
+    "start": "bun run build && bun --elide-lines=0 --filter api --filter web start",
     "docker:build:api": "docker build -t typescript-ai-toolbench-api -f apps/api/Dockerfile .",
     "docker:start:api": "docker run --rm --init -p 8080:80 typescript-ai-toolbench-api",
     "clean": "rimraf dist packages/**/dist apps/**/dist",

@@ -18,7 +18,7 @@ TypeScript monorepo using Bun workspaces. Node >=22 required.
 - `bun run dev:web` - Build packages, then run the Vite dev server
 - `bun run docker:build:api` - Build the API Docker image (from committed files)
 - `bun run docker:start:api` - Run the API Docker image on port 8080
-- `bun run start` - Build everything, then run the API server (API-only; the web app deploys as a static site)
+- `bun run start` - Build everything, then run the full stack from prod builds: api (:8080) + web via `vite preview` (:4173, proxies `/api` to the api — the local stand-in for the static site's prod rewrite)
 - `bun run test` - Run tests (vitest)
 - `bun run test:watch` - Run tests in watch mode
 - `bun run test:coverage` - Generate test coverage report

@@ -9,12 +9,13 @@ Vite's dev server proxies `/api` and `/health` to Hono on :8080.
 
 - `bun run dev` — start Hono (:8080) and Vite with HMR (:5173) together
 - `bun run dev:web` — Vite dev server alone
-- `bun run start` — build everything, run the API server (:8080)
+- `bun run start` — build everything, then run api (:8080) + this app via `vite preview` (:4173)
 - `bun --filter web test` — run this app's tests
 - `bun --filter web lint` — lint this app
 
 No env setup is needed for `bun run dev` or `bun run start`: the api defaults
-to :8080, the port Vite's proxy targets. If you do set a different `PORT` in
+to :8080, the port Vite's proxy targets (`vite preview` reuses the same proxy
+config, mirroring the static site's prod `/api/*` rewrite). If you do set a different `PORT` in
 `apps/api/.env`, update the proxy targets in `vite.config.ts` to match.
 
 ## Structure
