@@ -189,6 +189,7 @@ export default ts.config(
       '**/vitest.config.ts',
       '**/bin/**',
       '**/.terraform/**',
+      '**/.claude/**',
     ],
   },
 );
