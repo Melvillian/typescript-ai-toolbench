@@ -99,3 +99,13 @@ Static-site notes:
   delete the old service (removing its entry from `render.yaml` does not
   destroy the running service — confirm deletion in the dashboard or via the
   API).
+
+## Workspace and naming
+
+- Render MCP: call `select_workspace` with id `tea-cspvkb8gph6c73ft0hd0`
+  before anything else.
+- Name new `render.yaml` services `<repository-name>-<app-name>`. Render
+  appends a random suffix to the `.onrender.com` subdomain, so a bare `api`
+  becomes an unrecognizable `api-mvqh.onrender.com`. Do not rename an
+  existing service to match: renaming a blueprint service creates a new
+  service instead of renaming the old one.

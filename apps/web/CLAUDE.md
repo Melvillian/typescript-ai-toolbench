@@ -1,30 +1,13 @@
-# web
+# apps/web
 
-## Overview
+Vite + React 19 SPA with react-router and Tailwind v4. Deploys as a Render
+static site (see the `render-deploys` skill).
 
-Vite + React 19 + TypeScript SPA with react-router and Tailwind CSS v4.
-Built to `dist/` and deployed as a Render static site (SPA-fallback rewrite;
-`/api/*` rewrite proxies to the `apps/api` service — see the `render-deploys`
-skill). In dev, Vite proxies `/api` and `/health` to Hono on :8080.
-
-## Commands
-
-- `bun run build` - Type-check (`tsc --noEmit`) then bundle (`vite build`)
-- `bun run typecheck` - Type-check only
-- `bun run test` - Vitest (jsdom + @testing-library/react)
-- `bun run lint` - ESLint with --fix
-- `bun run dev` - Vite dev server with HMR (:5173)
-- `bun run preview` - Preview the production build
-
-## Conventions
-
-- Add pages in `src/pages/`, register them in `src/routes.tsx`; `App.tsx`
-  stays a pure layout shell.
-- Fetch APIs by relative path (`/api/...`) so the dev proxy and the static
-  site's prod `/api/*` rewrite both work.
-- Standalone `tsconfig.json` (bundler resolution, `noEmit`) — does not extend
-  the root NodeNext config, same pattern as `apps/api`.
-
-## Auto-Update Instructions
-
-After changes to files in this directory, run `/update-claude-md`.
+- Add pages in `src/pages/` and register them in `src/routes.tsx`;
+  `App.tsx` stays a pure layout shell.
+- Fetch the API by relative path (`/api/...`). Vite's dev proxy and the
+  static site's prod `/api/*` rewrite both depend on it.
+- Standalone `tsconfig.json` (bundler resolution, `noEmit`) that does not
+  extend the root NodeNext config. `build` runs `tsc --noEmit` first, so type
+  errors fail the build.
+- Tests run under jsdom, configured in `vite.config.ts`.
