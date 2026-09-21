@@ -32,7 +32,7 @@ See the [Environment variables](#environment-variables) section below for requir
 - Prettier for code formatting
 - ESLint for linting
 - VSCode will auto-format on save and paste
-- Vitest for testing with coverage support
+- Vitest for testing, with a blocking 95% per-workspace coverage gate (v8 provider)
 - Github action CI
 
 ## Commands
@@ -49,7 +49,7 @@ See the [Environment variables](#environment-variables) section below for requir
 | `bun run start`            | Build everything, then run the full stack: api (:8080) + web (:4173)       |
 | `bun run test`             | Run tests (vitest)                                                         |
 | `bun run test:watch`       | Run tests in watch mode                                                    |
-| `bun run test:coverage`    | Generate test coverage report                                              |
+| `bun run test:coverage`    | Run tests and enforce the 95% per-workspace coverage gate (what CI runs)   |
 | `bun run lint`             | Lint and fix (eslint)                                                      |
 | `bun run lint:check`       | Lint check only                                                            |
 | `bun run typecheck`        | Type check all packages                                                    |

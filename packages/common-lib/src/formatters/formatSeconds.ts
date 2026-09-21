@@ -2,7 +2,7 @@ import { formatUnit, type UnitArray } from './formatUnit.js';
 
 const secondUnits: UnitArray = [
   {
-    value: 30 * 25 * 60 * 60,
+    value: 30 * 24 * 60 * 60,
     notation: 'M',
   },
   {

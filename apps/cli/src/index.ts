@@ -20,7 +20,9 @@ export const main = async () => {
   } catch {
     // we assume it failed because bun couldn't find ../package.json and that
     // we're running in a Bun single binary executable, so we use the build variables.
-    if (BUILD_VERSION !== undefined) {
+    // typeof, not `!== undefined`: without --define the variable does not
+    // exist, and any other read of it throws a ReferenceError.
+    if (typeof BUILD_VERSION !== 'undefined') {
       version = BUILD_VERSION;
     }
   }
