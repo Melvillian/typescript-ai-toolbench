@@ -58,8 +58,10 @@ jobs:
       - name: Build
         run: bun run build
 
-      - name: Test
-        run: bun run test
+      # Runs every test and enforces the per-workspace 95% coverage thresholds
+      # from vitest.config.ts, so this job is both the test and coverage gate.
+      - name: Test with coverage gate
+        run: bun run test:coverage
 
   lint:
     runs-on: ubuntu-latest

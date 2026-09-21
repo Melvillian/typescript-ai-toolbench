@@ -5,7 +5,7 @@ dist
 build
 stats.html
 log.txt
-coverage
+/coverage
 *.tsbuildinfo
 claude-setup.tar.gz
 .DS_Store
