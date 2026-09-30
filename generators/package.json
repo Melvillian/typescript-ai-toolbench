@@ -9,7 +9,8 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --root . --passWithNoTests",
+    "lint": "eslint src --fix",
     "start": "bun bin/generator.js"
   },
   "dependencies": {
