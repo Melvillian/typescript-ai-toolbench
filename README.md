@@ -6,7 +6,7 @@ It is what @Melvillian considers best practice in July 2026.
 
 ## Setup
 
-> **Using Claude Code?** Just run `/setup` — it checks all prerequisites, installs dependencies, builds everything, and verifies your environment. No manual steps needed.
+> **Using Claude Code?** Just run `/setup` — it asks what this project is for, removes the apps and packages you don't need, rewrites the npm scripts and this README to match, then checks prerequisites, installs dependencies, builds everything, and verifies your environment. No manual steps needed.
 
 ### Manual setup
 
