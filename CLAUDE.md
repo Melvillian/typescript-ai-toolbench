@@ -54,6 +54,22 @@ statements**. `bun run test:coverage` is the gate (thresholds per workspace in
   `--root .` and `eslint src` scope to that workspace; `--passWithNoTests`
   keeps `test` green before any tests exist, so keep the script even then.
 
+- **Every workspace needs its own `vitest.config.ts`** (or a `vite.config.ts`
+  with a `test` block, as `apps/web` has). Without one, the workspace's own
+  `test` script picks up the root config. Its `projects` globs then resolve
+  relative to the workspace and the run fails with "Projects definition
+  references a non-existing file". The minimal config:
+
+  ```ts
+  import { defineConfig } from 'vitest/config';
+
+  export default defineConfig({
+    test: {
+      environment: 'node',
+    },
+  });
+  ```
+
 - Build before typecheck or test. Cross-workspace imports resolve against
   sibling `dist/*.d.ts`, which only exist after `bun run build`. Bun orders
   the build by dependency (that is why Bun >=1.3.9 is required).

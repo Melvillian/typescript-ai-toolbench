@@ -32,16 +32,25 @@ describe('API routes', () => {
   });
 
   it('unknown /api paths return a JSON 404', async () => {
-    for (const p of ['/api', '/api/nope', '/api/nested/deeper']) {
-      const res = await app.request(p);
+    const responses = await Promise.all(
+      ['/api', '/api/nope', '/api/nested/deeper'].map(async (p) =>
+        app.request(p),
+      ),
+    );
+    for (const res of responses) {
       expect(res.status).toBe(404);
-      expect(await res.json()).toEqual({ error: 'not found' });
+    }
+    const bodies = await Promise.all(responses.map((res) => res.json()));
+    for (const body of bodies) {
+      expect(body).toEqual({ error: 'not found' });
     }
   });
 
   it('non-API paths 404 — the web app is a static site, not served here', async () => {
-    for (const p of ['/', '/about']) {
-      const res = await app.request(p);
+    const responses = await Promise.all(
+      ['/', '/about'].map(async (p) => app.request(p)),
+    );
+    for (const res of responses) {
       expect(res.status).toBe(404);
     }
   });
