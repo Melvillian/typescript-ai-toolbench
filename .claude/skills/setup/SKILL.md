@@ -1,24 +1,59 @@
 ---
 name: setup
-description: Check prerequisites, tailor the template to this project (prune unneeded apps/packages, rewrite npm scripts and README), install, build, and verify everything works. Use when first cloning the repo or when setup seems broken.
+description: Get a clone ready to run. Detects a fresh template repo (asks for its purpose, then prunes unneeded apps/packages and rewrites npm scripts and README) versus an existing project (just checks prerequisites, installs, builds, and says how to run it). Use when first cloning the repo or when setup seems broken.
 disable-model-invocation: true
 ---
 
 # Repository Setup
 
-## Your first reply: ask for the repo's intent
+`/setup` runs on two kinds of repo:
 
-Before running any command, reading any file, or saying anything else, your entire first reply is exactly this one line:
+- **Fresh** — just generated from the template and never worked on. Setup tailors it to the project (asks for its purpose, prunes workspaces, renames, rewrites scripts and README), then installs, builds, and verifies.
+- **Existing** — a project already built on the template. Setup only prepares the environment so the user can run the app and its tests as fast as possible. It asks nothing and edits no files.
+
+## Step 0: detect the kind of repo
+
+Before saying anything to the user, run:
+
+```bash
+[ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = false ] \
+  && [ "$(git rev-list --count HEAD 2>/dev/null)" = 1 ] \
+  && grep -q 'This is a template for a monorepo' README.md 2>/dev/null \
+  && echo fresh || echo existing
+```
+
+A repo generated from a GitHub template starts as exactly one commit (`Initial commit`) whose README is still the template's. Any further commit means someone is already working in it. A shallow clone or a directory that isn't a git repo can't be told apart, so it counts as **existing** — skipping the tailoring is the cheaper mistake.
+
+The user can override detection: `/setup tailor` forces the fresh path, `/setup env` forces the existing path.
+
+- **`fresh`** → follow [Fresh repo](#fresh-repo).
+- **`existing`** → follow [Existing repo](#existing-repo).
+
+For every check in either path, run the command, inspect the output, and report the result to the user. If a check fails, attempt the fix before moving on. If the fix also fails, stop and tell the user what went wrong.
+
+## Existing repo
+
+Run only sections 1, 2, 9, 10, and 14, in that order. Skip everything else: sections 3–8 would rewrite a project someone is already working on, and sections 11–13 (typecheck, tests, lint) re-verify code that CI already verified on its way in. Do not ask the user for the repo's purpose.
+
+Then finish with a short summary instead of section 15:
+
+1. A table of the checks run (Node, Bun, dependencies, build, environment variables) with pass/fail/warn.
+2. **How to run it.** Read the root `package.json` `scripts` (and the README's Commands section if there is one) and tell the user, in a few lines, which commands start the app (`dev`, `dev:<app>`, `start`, `docker:*`) and run the checks (`test`, `test:coverage`, `typecheck`, `lint:check`). Only list scripts that exist. Do not start long-running servers yourself.
+3. If the README still opens with "This is a template for a monorepo", add one line: this repo still has the template's README and demo workspaces, and `/setup tailor` will tailor it.
+
+## Fresh repo
+
+### Your first reply: ask for the repo's intent
+
+After step 0 and before running anything else, your entire first reply is exactly this one line:
 
 > Give a description of the intent of this repo.
 
 No preamble, no plan, no progress report, no suggested answers, no `AskUserQuestion`. End your turn and wait. The user's answer is **the purpose**, used by sections 4–8.
 
-If the user answers that the repo is already set up, use the README intro as the purpose instead.
+Once you have the answer, run through every section below in order.
 
-Once you have the answer, run through each section below in order. For each check, run the command, inspect the output, and report the result to the user. If a check fails, attempt the fix before moving on. If the fix also fails, stop and tell the user what went wrong.
-
-Sections 4–8 tailor the template to this project. They are one-time edits: on a re-run, skip any section whose "already done" check passes.
+Sections 3–8 tailor the template to this project. They are one-time edits: on a re-run, skip any section whose "already done" check passes.
 
 ## 1. Check Node.js
 
@@ -35,7 +70,7 @@ Run `bun --version` and verify it is installed.
 
 ## 3. Update root package.json names
 
-Find all instances of `template-typescript-monorepo` in the repository, and replace them with the name of the repository. Choose the name of the project's root directory, even if it differs from the repository name according to git.
+Find all instances of the template's names, `typescript-ai-toolbench` (root `package.json` name and the `docker:*` image tags) and `template-typescript-monorepo` (older name, still in `bun.lock` until section 9's install rewrites it), and replace them with the name of the repository. Skip `docs/`, which holds dated historical plans. Choose the name of the project's root directory, even if it differs from the repository name according to git.
 
 ## 4. Record the project's purpose
 

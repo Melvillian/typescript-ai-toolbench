@@ -6,7 +6,7 @@ It is what @Melvillian considers best practice in July 2026.
 
 ## Setup
 
-> **Using Claude Code?** Just run `/setup` — it asks what this project is for, removes the apps and packages you don't need, rewrites the npm scripts and this README to match, then checks prerequisites, installs dependencies, builds everything, and verifies your environment. No manual steps needed.
+> **Using Claude Code?** Just run `/setup`. On a repo freshly generated from this template it asks what this project is for, removes the apps and packages you don't need, rewrites the npm scripts and this README to match, then installs, builds, and verifies everything. On an existing project it skips the questions and just checks prerequisites, installs dependencies, builds, and tells you how to run it. No manual steps needed.
 
 ### Manual setup
 
