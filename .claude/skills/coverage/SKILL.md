@@ -95,5 +95,8 @@ threshold yourself. Stop and ask the user with the specifics.
   coverage config.
 - The four required scripts from `CLAUDE.md` (`build`, `typecheck`, `test`,
   `lint`).
-- A React workspace needs a local vite/vitest config with
+- A local `vitest.config.ts` (copy `generators/vitest.config.ts`). Without
+  one, the workspace's own `test` script inherits the root config's
+  `projects` and fails at startup.
+- A React workspace instead needs a local vite/vitest config with
   `test.environment: 'jsdom'` (see `apps/web/vite.config.ts`).

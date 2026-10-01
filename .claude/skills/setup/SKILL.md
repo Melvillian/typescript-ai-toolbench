@@ -70,7 +70,15 @@ Run `bun --version` and verify it is installed.
 
 ## 3. Update root package.json names
 
-Find all instances of the template's names, `typescript-ai-toolbench` (root `package.json` name and the `docker:*` image tags) and `template-typescript-monorepo` (older name, still in `bun.lock` until section 9's install rewrites it), and replace them with the name of the repository. Skip `docs/`, which holds dated historical plans. Choose the name of the project's root directory, even if it differs from the repository name according to git.
+The new name is the project's root directory name (`basename "$PWD"`), even if it differs from the repository name according to git. The old name is whatever the root `package.json` `name` currently is (the template ships as `typescript-ai-toolbench`). If they already match, skip this section.
+
+1. Set the root `package.json` `name` to the new name.
+2. Set the image tag in the `docker:build:api` and `docker:start:api` scripts to `<new name>-api`. Section 6 deletes these scripts if `apps/api` is removed.
+3. Find any other leftovers of the old name and replace them:
+   ```bash
+   grep -rn --exclude-dir={node_modules,dist,.git,docs} --exclude=bun.lock --exclude=SKILL.md '<old name>' .
+   ```
+   Leave `docs/` alone (dated historical plans and specs) and this skill file. `bun.lock` is rewritten by `bun install` in section 9.
 
 ## 4. Record the project's purpose
 
@@ -159,23 +167,30 @@ After rewriting, verify every `--filter <name> <script>` in the root scripts nam
 
 For every remaining workspace (`apps/*`, `packages/*`, `generators`):
 
-1. **Required scripts.** Every workspace must define all four, or `bun --filter '*'` silently drops it from the CI gate (see root `CLAUDE.md`):
+1. **Required scripts and config.** Every workspace must define all four, or `bun --filter '*'` silently drops it from the CI gate (see root `CLAUDE.md`):
+
    ```jsonc
    "build": "tsc",
    "typecheck": "tsc --noEmit",
    "test": "vitest run --root . --passWithNoTests",
    "lint": "eslint src --fix"
    ```
+
    Add any that are missing, and fix `test`/`lint` variants that don't scope to the workspace (a bare `vitest run` or `eslint .`). Keep a `build` that intentionally differs (e.g. `apps/web`'s `tsc --noEmit && vite build`).
+
+   Each workspace also needs a local `vitest.config.ts` (or a `vite.config.ts`, as in `apps/web`). Without one, its `test` script inherits the root config's `projects` and fails at startup. If one is missing, copy `generators/vitest.config.ts`.
+
 2. **Scripts the root calls.** Each `--filter <this workspace> <script>` in the root scripts must exist here: server apps need `dev` and `start`, the CLI needs `start`.
 3. **Stale scripts.** Delete scripts that reference removed workspaces or files that no longer exist. Check that paths in the remaining scripts (e.g. `bin/cli.js`, `dist/main.js`) still resolve.
 4. Keep other workspace-specific scripts that still work (`preview`, `build:single`, packages' `dev: tsc --watch`). Don't add scripts nothing calls.
 
-Check for missing required scripts with:
+Check for missing required scripts and configs with the command below. It uses `find`, not shell globs: zsh, the default macOS shell, treats an unmatched glob as an error, so a glob breaks as soon as section 5 empties `packages/`.
 
 ```bash
-for f in apps/*/package.json packages/*/package.json generators/package.json; do
-  [ -f "$f" ] && node -e 'const p=require(process.argv[1]); const m=["build","typecheck","test","lint"].filter(s=>!p.scripts?.[s]); if (m.length) console.log(p.name, "missing:", m.join(", "))' "./$f"
+find apps packages generators -maxdepth 2 -name package.json -not -path '*/node_modules/*' 2>/dev/null | while read -r f; do
+  d=$(dirname "$f")
+  node -e 'const p=require(process.argv[1]); const m=["build","typecheck","test","lint"].filter(s=>!p.scripts?.[s]); if (m.length) console.log(p.name, "missing:", m.join(", "))' "./$f"
+  [ -f "$d/vitest.config.ts" ] || [ -f "$d/vite.config.ts" ] || echo "$d missing: vitest.config.ts"
 done
 ```
 
@@ -191,6 +206,13 @@ Rewrite README.md to describe **this** project, as it now stands after sections 
 - **Commands:** regenerate the table from the final root `package.json` scripts — one row per script, no rows for deleted scripts. Update the prose below the table to match (e.g. drop the Docker full-stack paragraph if `apps/api` is gone).
 - **Environment variables:** list only variables that a remaining workspace reads.
 - Keep the Setup section.
+
+If `apps/web` is kept, also replace its template labels with the project's. Change only the labels. Building the app is a separate step offered in section 15.
+
+- `apps/web/index.html`: `<title>Web App</title>` → the project name.
+- `apps/web/src/pages/About.tsx`: the "About this template" heading and body → a short description of this project, taken from the purpose.
+- `apps/web/src/pages/Home.tsx`: the "Home" heading → the project name. Leave the `/api/hello` demo call in place.
+- Update the tests that assert on these strings (`App.test.tsx`, `Home.test.tsx`, `routes.test.tsx`) so `bun run test:coverage` still passes.
 
 ## 9. Install dependencies
 
@@ -264,6 +286,14 @@ Print a summary table of all checks:
 If section 5 removed anything or sections 6–8 edited files, list the changed files and remind the user to review and commit them (including `bun.lock`).
 
 If everything passed, tell the user they're good to go and remind them of the key commands, taken from the final root `package.json` scripts: `dev`, `dev:<app>`, `start`, and `docker:*` if they exist, plus `test` and `lint`.
+
+Then say plainly that **setup tailored the scaffolding but did not build the app**. Users often run `bun run start` next and expect to see their project. List the demo code that is still in place, for the workspaces that remain:
+
+- `apps/web`: the Home page that calls `GET /api/hello` to prove the web → api wiring, and the About page.
+- `apps/api`: the demo routes `/api/hello` and `/api/info` in `apps/api/src/app.ts`.
+- `apps/cli`: the demo commands in `apps/cli/src/commands/`.
+
+End by offering to start building the app the user described (the purpose from section 4), replacing that demo code as you go.
 
 ---
 
