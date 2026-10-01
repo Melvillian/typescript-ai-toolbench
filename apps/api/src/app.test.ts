@@ -31,27 +31,20 @@ describe('API routes', () => {
     });
   });
 
-  it('unknown /api paths return a JSON 404', async () => {
-    const responses = await Promise.all(
-      ['/api', '/api/nope', '/api/nested/deeper'].map(async (p) =>
-        app.request(p),
-      ),
-    );
-    for (const res of responses) {
+  it.each(['/api', '/api/nope', '/api/nested/deeper'])(
+    'unknown /api path %s returns a JSON 404',
+    async (p) => {
+      const res = await app.request(p);
       expect(res.status).toBe(404);
-    }
-    const bodies = await Promise.all(responses.map((res) => res.json()));
-    for (const body of bodies) {
-      expect(body).toEqual({ error: 'not found' });
-    }
-  });
+      expect(await res.json()).toEqual({ error: 'not found' });
+    },
+  );
 
-  it('non-API paths 404 — the web app is a static site, not served here', async () => {
-    const responses = await Promise.all(
-      ['/', '/about'].map(async (p) => app.request(p)),
-    );
-    for (const res of responses) {
+  it.each(['/', '/about'])(
+    'non-API path %s 404s — the web app is a static site, not served here',
+    async (p) => {
+      const res = await app.request(p);
       expect(res.status).toBe(404);
-    }
-  });
+    },
+  );
 });
