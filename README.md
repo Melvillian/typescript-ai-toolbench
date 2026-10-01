@@ -6,7 +6,7 @@ It is what @Melvillian considers best practice in July 2026.
 
 ## Setup
 
-> **Using Claude Code?** Just run `/setup` — it checks all prerequisites, installs dependencies, builds everything, and verifies your environment. No manual steps needed.
+> **Using Claude Code?** Just run `/setup`. On a repo freshly generated from this template it asks what you're building and tailors the template to it; on an existing project it checks prerequisites, installs dependencies, builds, and tells you how to run it. No manual steps needed.
 
 ### Manual setup
 

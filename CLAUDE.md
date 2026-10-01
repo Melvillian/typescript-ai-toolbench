@@ -77,6 +77,6 @@ statements**. `bun run test:coverage` is the gate (thresholds per workspace in
 
 ## Skills
 
-- `/setup` — fresh-clone prerequisites, install, build, verify.
+- `/setup` — tailor a fresh template repo, or just install and build an existing one.
 - `coverage` — working the coverage gate: fast loops, test patterns, exclusions.
 - `render-deploys` — everything about deploying to Render.
