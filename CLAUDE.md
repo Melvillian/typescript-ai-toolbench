@@ -77,6 +77,9 @@ statements**. `bun run test:coverage` is the gate (thresholds per workspace in
 
 ## Skills
 
-- `/setup` — tailor a fresh template repo, or just install and build an existing one.
+- `/setup` — on a fresh template repo: prerequisites, then tailor the
+  template (prune unneeded apps/packages, rewrite npm scripts and README),
+  install, build, verify. On an existing project: prerequisites, install,
+  build, and how to run it.
 - `coverage` — working the coverage gate: fast loops, test patterns, exclusions.
 - `render-deploys` — everything about deploying to Render.
