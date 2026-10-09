@@ -67,6 +67,17 @@ describe('appendToRenderYaml', () => {
     expect(occurrences).toHaveLength(1);
   });
 
+  it('pins both entry types to the main branch', async () => {
+    await appendToRenderYaml('api', 'caroline-nanny-website', yamlPath);
+    await appendToRenderYaml('web', 'caroline-nanny-website', yamlPath, {
+      static: true,
+    });
+
+    const yaml = await readFile(yamlPath, 'utf-8');
+    const occurrences = yaml.match(/branch: main/g) ?? [];
+    expect(occurrences).toHaveLength(2);
+  });
+
   describe('static mode', () => {
     it('writes a static site entry with build command, publish path, and SPA fallback', async () => {
       await appendToRenderYaml('web', 'caroline-nanny-website', yamlPath, {

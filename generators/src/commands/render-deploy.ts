@@ -116,6 +116,7 @@ function staticSiteEntry(appName: string, serviceName: string): string {
     name: ${serviceName}
     runtime: static
     autoDeploy: true
+    branch: main
     buildCommand: bun install --frozen-lockfile && bun run build
     staticPublishPath: apps/${appName}/dist
     routes:
@@ -140,6 +141,7 @@ function dockerServiceEntry(appName: string, serviceName: string): string {
     name: ${serviceName}
     env: docker
     autoDeploy: true
+    branch: main
     dockerfilePath: apps/${appName}/Dockerfile
     healthCheckPath: /health
     envVars:
