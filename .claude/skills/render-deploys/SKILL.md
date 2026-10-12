@@ -74,8 +74,8 @@ Static-site notes:
   Dockerfile is the single source of truth, giving local == Render parity.
   Reproduce a Render build locally with `bun run docker:build:api` (directory
   context `.`, so the root `.dockerignore` applies). The build uses your
-  working tree as-is — commit and push first if you want it to mirror exactly
-  what Render builds from your branch.
+  working tree as-is — check out a clean, up-to-date `main` to mirror
+  exactly what Render builds.
 - **bun is mandatory** in the Dockerfile: npm cannot resolve the `workspace:*`
   protocol. Build in a `node:24-bookworm` image with bun installed (node ships
   the compilers for native addons and runs tsc), then run under Bun
