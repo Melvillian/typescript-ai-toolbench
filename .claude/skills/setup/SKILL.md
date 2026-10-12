@@ -1,7 +1,6 @@
 ---
 name: setup
 description: Get a clone ready to run. Detects a fresh template repo (asks for its purpose, then prunes unneeded apps/packages and rewrites npm scripts and README) versus an existing project (just checks prerequisites, installs, builds, and says how to run it). Use when first cloning the repo or when setup seems broken.
-disable-model-invocation: true
 ---
 
 # Repository Setup
