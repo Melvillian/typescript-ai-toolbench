@@ -85,6 +85,8 @@ statements**. `bun run test:coverage` is the gate (thresholds per workspace in
 
 - Name new `render.yaml` services `<repository-name>-<app-name>`. Never
   rename an existing service: renaming creates a new service instead.
+- Services always deploy from `main`. Never retarget a service to a feature
+  branch; merge or fast-forward into `main` to deploy.
 - Frontends deploy as static sites by default. `apps/api` is API-only and
   does not serve `apps/web`; in prod the static site's `/api/*` rewrite
   proxies to the api service. The decision heuristic, blueprint patterns,
