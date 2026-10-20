@@ -10,7 +10,7 @@ It is what @Melvillian considers best practice in July 2026.
 
 ### Manual setup
 
-Requires **Node >= 22** and **Bun >= 1.3.9**.
+Requires **Node >= 22** and **Bun >= 1.4**.
 
 ```bash
 bun install

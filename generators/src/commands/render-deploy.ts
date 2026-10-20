@@ -61,9 +61,9 @@ const renderDeploy = new Command('render-deploy')
 export function dockerfileContent(appName: string): string {
   return `# Stage 1: Build with the full node image (ships gcc/make/python3 for native
 # addons; no apt needed). bun is required to resolve the workspace:* protocol.
-FROM node:24-bookworm AS builder
+FROM node:26-bookworm AS builder
 
-RUN npm i -g bun@1.3.14
+RUN npm i -g bun@1.4.3
 
 WORKDIR /app
 
@@ -75,8 +75,8 @@ RUN bun run build
 
 # Stage 2: Slim Bun runtime. Same bun version as the builder so any native
 # addon compiled during bun install loads against the same embedded Node ABI
-# (bun@1.3.14 embeds Node 24).
-FROM oven/bun:1.3.14-slim
+# (bun@1.4.3 embeds Node 26).
+FROM oven/bun:1.4.3-slim
 
 WORKDIR /app
 

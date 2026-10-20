@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-TypeScript monorepo template on Bun workspaces (Node >=22, Bun >=1.3.9).
+TypeScript monorepo template on Bun workspaces (Node >=22, Bun >=1.4).
 Scripts live in the root `package.json`; the README has the command table.
 
 ## Coverage (required, no one has to ask)
@@ -72,7 +72,9 @@ statements**. `bun run test:coverage` is the gate (thresholds per workspace in
 
 - Build before typecheck or test. Cross-workspace imports resolve against
   sibling `dist/*.d.ts`, which only exist after `bun run build`. Bun orders
-  the build by dependency (that is why Bun >=1.3.9 is required).
+  the build by dependency. Bun >=1.4 is required: 1.4 rewrote the runtime
+  from Zig to Rust, so 1.3.x may behave subtly differently, and `bun.lock` is
+  written by 1.4.
 - `apps/api` and `apps/web` have standalone `tsconfig.json`s that do not
   extend the root NodeNext config; `packages/*`, `apps/cli`, and `generators`
   extend it.

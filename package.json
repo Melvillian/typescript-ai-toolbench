@@ -5,7 +5,7 @@
   "description": "",
   "type": "module",
   "main": "index.js",
-  "packageManager": "bun@1.3.14",
+  "packageManager": "bun@1.4.3",
   "scripts": {
     "build": "bun --elide-lines=0 --filter '*' build",
     "dev": "bun --elide-lines=0 --filter './packages/*' build && bun --elide-lines=0 --filter api --filter web dev",

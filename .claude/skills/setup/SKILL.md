@@ -65,7 +65,7 @@ Run `node --version` and verify the major version is >= 22 (as required by the `
 Run `bun --version` and verify it is installed.
 
 - **If missing:** Ask the user if they'd like you to install Bun by running `curl -fsSL https://bun.sh/install | bash`. If they agree, run it. If they decline, stop and tell them Bun is required.
-- **If installed:** Check the version. The repo's `packageManager` field specifies `bun@1.3.14`. Bun **>= 1.3.9** is required (older versions don't order `bun --filter` builds by dependency). If the installed version is older, warn the user and suggest upgrading.
+- **If installed:** Check the version. The repo's `packageManager` field specifies `bun@1.4.3`. Bun **>= 1.4** is required (1.4 rewrote the runtime from Zig to Rust, so 1.3.x may behave subtly differently, and `bun.lock` is written by 1.4). If the installed version is older, warn the user and suggest upgrading.
 
 ## 3. Update root package.json names
 
@@ -268,7 +268,7 @@ Print a summary table of all checks:
 | Step                   | Status            |
 | ---------------------- | ----------------- |
 | Node.js >= 22          | pass/fail         |
-| Bun >= 1.3.9           | pass/fail         |
+| Bun >= 1.4             | pass/fail         |
 | Update template name   | pass/fail         |
 | Project purpose        | set/skipped       |
 | Pruned workspaces      | list removed/none |

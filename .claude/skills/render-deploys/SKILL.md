@@ -77,11 +77,11 @@ Static-site notes:
   working tree as-is — check out a clean, up-to-date `main` to mirror
   exactly what Render builds.
 - **bun is mandatory** in the Dockerfile: npm cannot resolve the `workspace:*`
-  protocol. Build in a `node:24-bookworm` image with bun installed (node ships
+  protocol. Build in a `node:26-bookworm` image with bun installed (node ships
   the compilers for native addons and runs tsc), then run under Bun
-  (`oven/bun:1.3.14-slim`). Builder and runtime pin the same bun version so
+  (`oven/bun:1.4.3-slim`). Builder and runtime pin the same bun version so
   native addons compiled at install time load against the same embedded Node
-  ABI (bun@1.3.14 embeds Node 24). Never use `bun build --compile`
+  ABI (bun@1.4.3 embeds Node 26). Never use `bun build --compile`
   single-binary images — that pattern broke native addons and runtime file
   reads (see docs/superpowers/specs/2026-06-22-render-template-improvements-design.md).
 
@@ -96,7 +96,7 @@ Static-site notes:
   actually has the work: a repo whose commits all sit on a feature branch
   deploys the bare template until main is fast-forwarded.
 - **Build order:** `bun run build` is `bun --filter '*' build`, which builds
-  every workspace in dependency order automatically (requires Bun >= 1.3.9).
+  every workspace in dependency order automatically (requires Bun >= 1.4).
   No manual step is needed when adding a package or app.
 - **Blueprint sync:** pushing `render.yaml` changes to main creates/updates
   services automatically (first-time repos need a one-time Blueprint

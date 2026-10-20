@@ -13,9 +13,9 @@ import {
 describe('dockerfileContent', () => {
   it('builds with node + bun and runs under bun (no --compile binary)', () => {
     const df = dockerfileContent('api');
-    expect(df).toContain('FROM node:24-bookworm AS builder');
+    expect(df).toContain('FROM node:26-bookworm AS builder');
     expect(df).toContain('RUN bun run build');
-    expect(df).toContain('FROM oven/bun:1.3.14-slim');
+    expect(df).toContain('FROM oven/bun:1.4.3-slim');
     expect(df).toContain('CMD ["bun", "apps/api/dist/main.js"]');
     expect(df).not.toContain('--compile');
   });
