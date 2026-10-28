@@ -63,7 +63,7 @@ export function dockerfileContent(appName: string): string {
 # addons; no apt needed). bun is required to resolve the workspace:* protocol.
 FROM node:26-bookworm AS builder
 
-RUN npm i -g bun@1.4.3
+RUN npm i -g bun@1.4.4
 
 WORKDIR /app
 
@@ -75,8 +75,8 @@ RUN bun run build
 
 # Stage 2: Slim Bun runtime. Same bun version as the builder so any native
 # addon compiled during bun install loads against the same embedded Node ABI
-# (bun@1.4.3 embeds Node 26).
-FROM oven/bun:1.4.3-slim
+# (bun@1.4.4 embeds Node 26).
+FROM oven/bun:1.4.4-slim
 
 WORKDIR /app
 

@@ -79,9 +79,9 @@ Static-site notes:
 - **bun is mandatory** in the Dockerfile: npm cannot resolve the `workspace:*`
   protocol. Build in a `node:26-bookworm` image with bun installed (node ships
   the compilers for native addons and runs tsc), then run under Bun
-  (`oven/bun:1.4.3-slim`). Builder and runtime pin the same bun version so
+  (`oven/bun:1.4.4-slim`). Builder and runtime pin the same bun version so
   native addons compiled at install time load against the same embedded Node
-  ABI (bun@1.4.3 embeds Node 26). Never use `bun build --compile`
+  ABI (bun@1.4.4 embeds Node 26). Never use `bun build --compile`
   single-binary images — that pattern broke native addons and runtime file
   reads (see docs/superpowers/specs/2026-06-22-render-template-improvements-design.md).
 

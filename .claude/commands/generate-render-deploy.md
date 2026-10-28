@@ -49,7 +49,7 @@ Add Render CD deployment capability to the app `apps/$ARGUMENTS.app-name`.
      service's real `.onrender.com` URL after its first deploy.
 
    Web service:
-   - `apps/$ARGUMENTS.app-name/Dockerfile` (node:24 builder, runs under bun)
+   - `apps/$ARGUMENTS.app-name/Dockerfile` (node:26 builder, runs under bun)
    - The root `render.yaml` has a new service entry for `$ARGUMENTS.app-name`
      with `healthCheckPath: /health`
 
