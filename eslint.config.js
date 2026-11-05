@@ -1,7 +1,6 @@
 // eslint.config.js
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
-import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import importPlugin from 'eslint-plugin-import';
 import unusedImports from 'eslint-plugin-unused-imports';
 import pluginPromise from 'eslint-plugin-promise';
@@ -9,7 +8,6 @@ import pluginPromise from 'eslint-plugin-promise';
 export default ts.config(
   js.configs.recommended,
   ts.configs.recommended,
-  prettierRecommended,
   importPlugin.flatConfigs.recommended,
   pluginPromise.configs['flat/recommended'],
   {
@@ -182,7 +180,6 @@ export default ts.config(
       '**/coverage',
       '**/*.d.ts',
       'eslint.config.js',
-      'prettier.config.js',
       '**/vite.config.*',
       '**/nitro.config.*',
       '**/eslint-rules',

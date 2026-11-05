@@ -8,8 +8,6 @@
     "html",
     "json"
   ],
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": true,
   "cSpell.words": [
     "bhouston",
     "Buildx",
@@ -46,8 +44,7 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.preferences.importModuleSpecifier": "relative",
 
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": ["source.formatDocument", "source.fixAll.eslint"],
+  "editor.codeActionsOnSave": ["source.fixAll.eslint"],
   "files.exclude": {
     "**/.git": true,
     "**/.nx": true

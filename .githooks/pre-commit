@@ -1,0 +1,4 @@
+#!/bin/sh
+# Format staged files with `bun fmt` and re-stage them.
+# Installed by the root `prepare` script (git config core.hooksPath .githooks).
+exec bun fmt --staged

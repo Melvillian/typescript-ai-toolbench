@@ -29,9 +29,9 @@ See the [Environment variables](#environment-variables) section below for requir
 - NodeNext node resolution
 - CLI via @commander
 - Hono (on the Bun runtime) for the API server
-- Prettier for code formatting
+- `bun fmt` (Bun's built-in formatter) for code formatting, configured in the `[fmt]` section of `bunfig.toml`
 - ESLint for linting
-- VSCode will auto-format on save and paste
+- A git pre-commit hook (`.githooks/pre-commit`, installed by `bun install`) formats staged files with `bun fmt --staged`
 - Vitest for testing, with a blocking 95% per-workspace coverage gate (v8 provider)
 - Github action CI
 
@@ -53,7 +53,8 @@ See the [Environment variables](#environment-variables) section below for requir
 | `bun run lint`             | Lint and fix (eslint)                                                      |
 | `bun run lint:check`       | Lint check only                                                            |
 | `bun run typecheck`        | Type check all packages                                                    |
-| `bun run format`           | Format code (prettier)                                                     |
+| `bun run format`           | Format code (`bun fmt`)                                                    |
+| `bun run format:check`     | Check formatting without writing (`bun fmt --check`)                       |
 | `bun run clean`            | Remove dist directories                                                    |
 | `bun run clean:all`        | Remove dist + node_modules                                                 |
 | `bun run cloc`             | Count lines of code                                                        |

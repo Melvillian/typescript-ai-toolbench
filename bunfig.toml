@@ -11,4 +11,18 @@ elide-lines = 0
 #   returnedCategory: "Entertainment",
 #   row: [Object ...],
 # },
-depth=8
+depth = 8
+
+[fmt]
+# Formatter for `bun fmt` (bun run format, and the pre-commit hook in
+# .githooks/pre-commit). Files matched by .gitignore are skipped automatically.
+trailingComma = "all"
+tabWidth = 2
+semi = true
+singleQuote = true
+ignorePatterns = [
+  "*.local",
+  "**/routeTree.gen.ts",
+  # Agent-written plans and specs; formatting them is just diff noise.
+  "docs/superpowers/",
+]
